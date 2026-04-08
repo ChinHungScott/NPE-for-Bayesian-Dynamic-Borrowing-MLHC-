@@ -1,0 +1,131 @@
+\section{Related Work}
+\label{sec:related}
+
+\subsection{Bayesian dynamic borrowing and balancing methods}
+
+Dynamic borrowing methods combine information from a small current study
+$D_c$ with data from an external source $D_e$ in order to improve inference on
+a current-study parameter $\theta$.
+When the two sources are sufficiently similar, borrowing can reduce variance
+and improve precision.
+When they differ in clinically meaningful ways, however, borrowing can induce
+bias and distort uncertainty quantification.
+Existing methods mainly differ in how they assess compatibility between the
+current and external data and how that assessment is translated into borrowing
+strength.
+
+The power prior \citep{ibrahim2000power, ibrahim2015power} incorporates
+external information by discounting the external likelihood through a scalar
+weight $a_0 \in [0,1]$:
+\begin{equation}
+p(\theta \mid D_c, D_e, a_0)
+\;\propto\;
+L(\theta; D_c)\,L(\theta; D_e)^{a_0}\,\pi(\theta).
+\end{equation}
+When $a_0 = 1$, the two sources are fully pooled, whereas $a_0 = 0$ ignores
+the external data entirely.
+The normalized power prior \citep{ye2022normalized} treats $a_0$ as unknown
+and integrates over it, allowing the data to determine the degree of borrowing.
+
+The commensurate prior \citep{hobbs2011commensurate} introduces separate
+parameters for the current and external sources and links them through a
+precision parameter:
+\begin{align}
+\theta_e &\sim \pi(\theta_e), \\
+\theta_c \mid \theta_e, \tau &\sim \mathcal{N}(\theta_e,\tau^{-1}).
+\end{align}
+Large values of $\tau$ encourage the two parameters to be close, whereas small
+values allow them to differ more freely.
+With an appropriate prior on $\tau$, the model can reduce borrowing when the
+data indicate prior-data conflict.
+
+The robust meta-analytic-predictive (robust MAP) prior
+\citep{neuenschwander2010summarizing, schmidli2014robust} combines an
+informative prior constructed from historical data with a vague component:
+\begin{equation}
+\pi_{\text{robust}}(\theta_c)
+=
+(1-\epsilon)\,\pi_{\text{MAP}}(\theta_c)
++
+\epsilon\,\pi_{\text{vague}}(\theta_c).
+\end{equation}
+Here $\epsilon$ is typically specified in advance and provides protection
+against conflict between historical and current data.
+This construction is especially attractive in practice because the robustness
+parameter has a transparent interpretation.
+
+A related class of methods approaches the problem through balancing or
+reweighting rather than hierarchical priors.
+Propensity-score methods reweight external subjects so that their covariate
+distribution better matches the current cohort \citep{stuart2010matching}.
+Inverse-probability weighting is a standard implementation, although it can be
+unstable when estimated propensity scores are close to 0 or 1.
+Overlap weighting \citep{li2018balancing} addresses this issue by emphasizing
+subjects in the region of covariate overlap, with weights proportional to
+$2\hat e(x)(1-\hat e(x))$.
+
+A key limitation of weighting-based approaches is that they primarily address
+differences in baseline covariates, but not differences in the outcome
+generation mechanism \citep{viele2014use, dahabreh2019generalizing}.
+In longitudinal Alzheimer's disease studies, cohorts may differ not only in
+patient characteristics, but also in diagnostic practice, follow-up intensity,
+medication availability, biomarker measurement, and outcome ascertainment.
+Such differences are difficult to capture with a single balancing score or a
+small number of discrepancy parameters.
+
+Taken together, existing Bayesian borrowing methods and weighting approaches
+often summarize source agreement through one or a few low-dimensional
+quantities.
+That strategy can be effective in simple settings, but falls short in longitudinal clinical data, where differences between cohorts are high-dimensional and change over time.
+This motivates the search for richer representations of cross-cohort
+similarity in complex disease settings such as Alzheimer's disease.
+
+\subsection{Neural posterior estimation and simulation-based inference}
+
+Neural posterior estimation (NPE) is a class of simulation-based inference
+methods \citep{cranmer2020frontier} in which a neural network is trained to
+approximate the posterior distribution directly:
+\begin{equation}
+q_{\phi}(\theta \mid x) \approx p(\theta \mid x),
+\end{equation}
+where $x$ denotes an observed data representation.
+Training is typically based on simulated pairs $(\theta, x)$ drawn from
+$p(\theta)p(x \mid \theta)$ and minimizes the expected negative log-likelihood
+\begin{equation}
+\mathcal{L}(\phi)
+=
+\mathbb{E}\left[-\log q_{\phi}(\theta \mid x)\right].
+\end{equation}
+Once trained, the network can produce an approximate posterior in a single
+forward pass, avoiding repeated posterior sampling for each new dataset
+\citep{papamakarios2019sequential, greenberg2019automatic,
+lueckmann2021benchmarking}.
+
+For dynamic borrowing, the representation supplied to the posterior estimator
+must encode not only information about the treatment effect, but also
+information relevant to source compatibility.
+This requirement differs from many standard simulation-based inference settings,
+where the primary challenge is compressing data without losing information
+about a single target parameter.
+In borrowing problems, the representation must also preserve structure that is
+informative about when external data should and should not influence inference.
+
+\subsection{Transformers and patient trajectory representations (Might remove this one?)}
+
+Transformers \citep{vaswani2017attention} are now widely used in EHR and
+longitudinal health-data modeling.
+Methods such as BEHRT \citep{li2020behrt} and Med-BERT
+\citep{rasmy2021medbert} treat diagnoses, medications, and procedures as
+tokens and learn contextualized patient representations through BERT-style
+pretraining.
+These models are well suited to irregular and heterogeneous clinical records,
+where temporal ordering and co-occurrence patterns both matter.
+
+The goal in the present setting, however, is different from standard clinical
+prediction.
+Rather than learning a representation solely for outcome classification or risk
+prediction, the representation should support posterior inference under
+borrowing.
+In particular, it should summarize clinically meaningful longitudinal
+structure within each cohort while preserving information about differences
+between cohorts that may affect the appropriateness of borrowing.

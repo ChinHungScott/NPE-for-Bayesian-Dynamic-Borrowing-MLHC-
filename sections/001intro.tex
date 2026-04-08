@@ -1,0 +1,93 @@
+\section{Introduction}
+
+External or historical cohorts are increasingly used to augment small
+concurrent studies in medicine.
+When the external and concurrent sources are sufficiently similar, borrowing
+can improve efficiency and stabilize estimation.
+When the sources differ in meaningful ways, however, naive borrowing can
+introduce bias and distort uncertainty quantification
+\citep{viele2014use}.
+This tension is especially important in Alzheimer's disease research, where
+prospective follow-up is expensive, clinically meaningful outcomes accrue
+slowly, and related cohorts often differ in enrollment criteria, disease
+severity, and assessment practice.
+
+Bayesian dynamic borrowing (BDB) provides a principled framework for
+adaptively controlling how much external information should influence
+current-study inference
+\citep{ibrahim2000power,hobbs2011commensurate,neuenschwander2010summarizing,
+schmidli2014robust}.
+Classical BDB methods such as the power prior, commensurate prior, and robust
+MAP prior have strong statistical motivation, but in practice they still
+require repeated model fitting for each new dataset pair and often summarize
+cross-source compatibility through one or a few low-dimensional quantities.
+That can be restrictive in settings where source mismatch is multi-faceted.
+
+Amortized neural posterior estimation (NPE) offers a different route.
+Instead of rerunning MCMC or numerical optimization for every new
+current/external pair, the idea is to train a neural network offline on many
+simulated borrowing problems and then use the trained network to output an
+approximate posterior in a single forward pass
+\citep{papamakarios2019sequential,greenberg2019automatic,cranmer2020frontier,
+lueckmann2021benchmarking}.
+The key design question is how to represent the two sources so that the
+network sees both the target estimand and the degree of non-exchangeability.
+
+In this paper we focus on a summary-based NPE approach for dynamic borrowing.
+We first study the method in a controlled simulation setting spanning six
+exchangeability regimes, including covariate shift, outcome drift, and joint
+non-exchangeability.
+We then examine a real-data borrowing case study using the Alzheimer's Disease
+Neuroimaging Initiative (ADNI) \citep{petersen2010alzheimer,weiner2017alzheimer}.
+Specifically, ADNI1 is treated as an external cohort and ADNIGO/ADNI2 as a
+concurrent cohort among baseline mild cognitive impairment (MCI) subjects, with
+24-month conversion to dementia as the outcome.
+This real-world application is not presented as a randomized treatment-effect
+analysis; rather, it is used to study borrowing under cohort shift in a
+clinically meaningful longitudinal dataset.
+
+The ADNI application serves two purposes.
+First, it provides an empirical check that the borrowing problem is real in
+practice: the external and concurrent cohorts have different event rates and
+therefore are not directly exchangeable.
+Second, it gives a setting in which we can adapt the NPE framework to infer a
+concurrent risk-level parameter while allowing the external cohort to differ
+through a nuisance shift parameter.
+This keeps the spirit of dynamic borrowing while avoiding an overstatement
+that the real-data example exactly matches the treatment-effect simulations.
+
+The remainder of the paper is organized as follows.
+Section~\ref{sec:related} reviews dynamic borrowing, balancing methods, and
+simulation-based inference.
+Section~\ref{sec:problem} introduces the simulation regimes and the ADNI
+borrowing setup.
+Section~\ref{sec:figures_plan} presents the empirical design, summarizes the
+current simulation workflow, and reports the ADNI real-world application.
+
+% -------------------------------------------------------
+% REQUIRED MLHC SECTION
+% -------------------------------------------------------
+\subsection*{Generalizable Insights about Machine Learning in the Context
+             of Healthcare}
+
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+  \item \textbf{Amortized inference can make adaptive borrowing practical in
+        healthcare studies with repeated external comparisons.}
+        Training an NPE model offline allows approximate posterior inference
+        for new cohort pairs without rerunning expensive Bayesian computation
+        from scratch each time.
+
+  \item \textbf{Real-world borrowing problems often appear first as calibration
+        mismatch rather than discrimination failure.}
+        In the ADNI application, external-only models rank subjects well but
+        systematically overestimate risk in the concurrent cohort, showing that
+        borrowing decisions should account for cohort shift even when predictive
+        AUC remains high.
+
+  \item \textbf{A combined simulation-plus-case-study design is useful for
+        evaluating healthcare borrowing methods.}
+        Controlled simulations make it possible to assess bias and error under
+        known exchangeability violations, while a real-world case study checks
+        whether the same issues appear in practice and whether the method
+        behaves sensibly on clinically meaningful data.
+\end{itemize}

@@ -1,0 +1,186 @@
+\section{Real-Data Example: ADNI}
+\label{sec:adni}
+
+We complement the simulation study with a real-data example based on the
+Alzheimer's Disease Neuroimaging Initiative (ADNI). The purpose of this section
+is different from that of the simulations. The simulations are used for
+controlled methodological evaluation, whereas the ADNI analysis is meant to
+show that the borrowing problem also appears clearly in an observed dataset.
+
+ADNI is not a randomized treatment study, so we do not treat this section as a
+treatment-effect analysis. Instead, we use it as a cohort-difference risk
+problem. The question is whether borrowing from an earlier ADNI cohort would
+pull inference away from the later concurrent cohort, and whether the proposed
+NPE formulation can better recover the concurrent risk level.
+
+\subsection{ADNI setup}
+
+We define the external cohort as ADNI1 and the concurrent cohort as the pooled
+ADNIGO and ADNI2 samples. The analysis is restricted to subjects with mild
+cognitive impairment (MCI) at baseline. The outcome is conversion to dementia
+(or Alzheimer's disease) by approximately 24 months. For subject $i$, let
+\[
+Y_i =
+\begin{cases}
+1, & \text{if subject } i \text{ converts by approximately 24 months},\\
+0, & \text{otherwise.}
+\end{cases}
+\]
+
+For each subject, we use the baseline covariate vector
+\[
+X_i = (\text{age},\ \text{female},\ \text{education},\ \text{APOE4 count},\
+\text{MMSE}_{\mathrm{bl}},\ \text{ADAS13}_{\mathrm{bl}},\
+\text{CDRSB}_{\mathrm{bl}},\ \text{FAQ}_{\mathrm{bl}}).
+\]
+
+Table~\ref{tab:adni-cohort-summary} summarizes the two cohorts. The concurrent
+cohort contains 376 subjects with an event rate of 0.1702, whereas the
+external cohort contains 337 subjects with an event rate of 0.3769. This
+difference is large enough to make naive borrowing questionable.
+
+\begin{table}[t]
+\centering
+\caption{ADNI cohort summary for the real-data borrowing example.}
+\label{tab:adni-cohort-summary}
+\begin{tabular}{lcc}
+\toprule
+Cohort & Number of subjects & Conversion rate \\
+\midrule
+Concurrent (ADNIGO + ADNI2) & 376 & 0.1702 \\
+External (ADNI1)            & 337 & 0.3769 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Baseline benchmark}
+
+Before applying NPE, we first check whether the data show the borrowing issue
+we are trying to study. We fit repeated logistic-regression baselines and
+evaluate them on a held-out concurrent test set:
+\begin{itemize}
+    \item \textbf{ConcurrentOnly}: trained only on concurrent data;
+    \item \textbf{ExternalOnly}: trained only on external data;
+    \item \textbf{Pooled}: trained on the combined external and concurrent data.
+\end{itemize}
+
+The results are shown in Table~\ref{tab:adni-baselines}. All three approaches
+have similarly high AUC and accuracy, so the main issue is not ranking
+performance. The more noticeable difference is calibration. The
+\texttt{ExternalOnly} and \texttt{Pooled} models both predict risks that are
+too high relative to the concurrent cohort. The observed concurrent event rate
+is 0.168, while the corresponding mean predicted risks are 0.248 and 0.218.
+This suggests that direct borrowing mainly distorts the level of risk rather
+than discrimination.
+
+\begin{table}[t]
+\centering
+\caption{Baseline benchmark on a held-out concurrent test set.}
+\label{tab:adni-baselines}
+\begin{tabular}{lcccccc}
+\toprule
+Method & AUC & Accuracy & Brier & LogLoss & MeanPred & MeanObs \\
+\midrule
+ConcurrentOnly & 0.918 & 0.881 & 0.084 & 0.271 & 0.183 & 0.168 \\
+ExternalOnly   & 0.923 & 0.887 & 0.088 & 0.303 & 0.248 & 0.168 \\
+Pooled         & 0.923 & 0.883 & 0.083 & 0.276 & 0.218 & 0.168 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{ADNI-specific NPE formulation}
+
+Since ADNI does not provide the same randomized treatment setting as the
+simulation study, we use a simpler formulation in which the target is the
+concurrent risk level. Let $X_c$ and $X_e$ denote the observed covariates in
+the concurrent and external cohorts. We simulate outcomes according to
+\begin{align}
+Y_c &\sim \mathrm{Bernoulli}\!\left(\sigma(X_c\beta + \theta)\right), \\
+Y_e &\sim \mathrm{Bernoulli}\!\left(\sigma(X_e\beta + \theta + \delta)\right),
+\end{align}
+where $\sigma(z)=1/(1+e^{-z})$ is the logistic link.
+
+In this model, $\theta$ is the concurrent risk-level parameter of interest,
+$\delta$ represents the shift between the external and concurrent outcome
+levels, and $\beta$ denotes the covariate effects. The role of $\delta$ is
+important here because it allows the external cohort to differ rather than
+forcing full exchangeability.
+
+To generate training data for NPE, we first fit a logistic model to the
+observed ADNI data and use the fitted coefficient vector as an anchor
+$\beta_{\mathrm{anchor}}$. We then simulate outcomes on the real ADNI
+covariates by sampling
+\[
+\theta \sim \mathrm{Uniform}(-3,0), \qquad
+\delta \sim N(0,0.75^2),
+\]
+adding small perturbations around $\beta_{\mathrm{anchor}}$, and generating
+$Y_c$ and $Y_e$ on the fixed covariate matrices $X_c$ and $X_e$. For each
+simulated dataset, we compute summary statistics based on covariate means and
+standard deviations, event-rate summaries, between-cohort differences, and
+sample-size information. The NPE model is then trained to approximate the
+posterior distribution of $\theta$.
+
+\subsection{ADNI results}
+
+Table~\ref{tab:adni-main-results} shows the main ADNI result. The posterior
+mean of the concurrent risk parameter is $-1.5990$, with posterior standard
+deviation $0.8585$ and a 95\% interval of $(-3.3009,\ 0.1082)$. The observed
+concurrent event rate is 0.1702, which corresponds to an empirical concurrent
+logit risk of
+\[
+\mathrm{logit}(0.1702) \approx -1.5841.
+\]
+The NPE posterior mean is therefore very close to the empirical concurrent
+target.
+
+\begin{table}[t]
+\centering
+\caption{Main ADNI real-data result for the NPE-based formulation.}
+\label{tab:adni-main-results}
+\begin{tabular}{lc}
+\toprule
+Quantity & Value \\
+\midrule
+Posterior mean of $\theta$     & $-1.5990$ \\
+Posterior SD of $\theta$       & $0.8585$ \\
+95\% interval for $\theta$     & $(-3.3009,\ 0.1082)$ \\
+Observed concurrent event rate & $0.1702$ \\
+Observed external event rate   & $0.3769$ \\
+Empirical concurrent logit     & $-1.5841$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:adni-comparators} compares this estimate with several simple
+reference values. The empirical external-only logit and pooled logit are both
+substantially above the concurrent target. Even the offset-based MLE estimates
+remain noticeably higher than the concurrent empirical logit. Among the
+estimators considered here, the NPE posterior mean is the closest to the
+concurrent target.
+
+\begin{table}[t]
+\centering
+\caption{Comparator estimates in the ADNI real-data example.}
+\label{tab:adni-comparators}
+\begin{tabular}{lc}
+\toprule
+Estimator & Value \\
+\midrule
+Empirical logit (concurrent)        & $-1.5841$ \\
+Empirical logit (external)          & $-0.5029$ \\
+Empirical logit (pooled)            & $-1.0054$ \\
+Offset-MLE $\theta$ (concurrent)    & $-1.0749$ \\
+Offset-MLE $\theta$ (pooled)        & $-0.7240$ \\
+Offset-MLE $\delta$ (external shift)& $0.6022$ \\
+NPE posterior mean $\theta$         & $-1.5990$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Overall, the ADNI analysis supports the same broad message as the simulation
+study. The earlier and later cohorts are not directly comparable, and direct
+borrowing tends to push the estimated risk upward. The ADNI-specific NPE
+formulation is much closer to the concurrent target. We do not view this as a
+replacement for the simulation study, but rather as a concrete example showing
+that the borrowing problem is not only a theoretical concern.

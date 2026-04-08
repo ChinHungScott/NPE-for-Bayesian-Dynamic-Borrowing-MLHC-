@@ -1,0 +1,37 @@
+\section{Discussion}
+\label{sec:discussion}
+
+We studied neural posterior estimation as an amortized approach to Bayesian
+dynamic borrowing. The basic appeal of the method is straightforward: instead
+of refitting a borrowing model from scratch for each new current--external data
+pair, we train the posterior estimator once on a broad simulation distribution
+and then use it to produce approximate posterior inference by a single forward
+pass.
+
+The simulation study is the main basis for methodological evaluation, since it
+allows us to examine behavior under controlled forms of covariate shift,
+outcome drift, and their combination. The ADNI analysis plays a different role.
+It shows, in a real dataset, that substantial cohort mismatch can arise in
+practice and that direct borrowing can pull inference away from the concurrent
+target even when discrimination remains strong.
+
+Several limitations should be kept in mind. First, the quality of NPE depends
+on the simulator used for training. If the training distribution does not cover
+the kinds of mismatch likely to appear in practice, the resulting posterior
+approximation may not be reliable. Second, the present implementation uses
+summary-based inputs. This keeps the method simple and computationally
+manageable, but it also means that the quality of the posterior depends in part
+on the quality of the summaries.
+
+Another point is that the ADNI section should be interpreted as an illustration
+rather than a definitive benchmark. The target in that analysis is a
+cohort-specific risk parameter, not a randomized treatment effect. Its value in
+the paper is that it shows the borrowing problem in a real-data setting and
+makes the consequences of naive borrowing easy to see.
+
+There are several directions for future work. One is to study whether richer
+representations of paired datasets can improve posterior behavior in more
+complex settings. Another is to investigate calibration adjustments for the
+posterior spread, especially in the more difficult mismatch regimes. A third is
+to consider settings with multiple candidate external sources, where the main
+challenge is not only how much to borrow, but also from which source to borrow.

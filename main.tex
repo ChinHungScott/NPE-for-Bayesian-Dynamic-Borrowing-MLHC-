@@ -1,0 +1,97 @@
+\documentclass[pmlr]{jmlr}
+
+% ---------------------------------------------------------------
+% MLHC 2026 requires 11-point Times font.
+% newtxtext/newtxmath provide Times Roman text + matching math.
+% ---------------------------------------------------------------
+\usepackage{txfonts}  % Times Roman text and math fonts (11pt per MLHC requirement)
+
+% ---------------------------------------------------------------
+% Packages (jmlr auto-loads: amsmath, amssymb, natbib, graphicx,
+%           url, algorithm2e — add only extras here)
+% ---------------------------------------------------------------
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{mathtools}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc,shapes.multipart}
+% hyperref is loaded by jmlr.cls -- removed to avoid option clash
+
+% siunitx workaround for newer LaTeX releases
+\makeatletter
+\def\set@curr@file#1{\def\@curr@file{#1}}
+\makeatother
+\usepackage[load-configurations=version-1]{siunitx}
+
+% ---------------------------------------------------------------
+% MLHC-specific metadata
+% ---------------------------------------------------------------
+\jmlrvolume{[VOLUME \# TBD]}
+\jmlryear{2026}
+\jmlrworkshop{Machine Learning for Healthcare}
+
+% ---------------------------------------------------------------
+% Title  (ANONYMIZED for double-blind review)
+% ---------------------------------------------------------------
+\title[Neural Posterior Estimation for Bayesian Dynamic Borrowing]{%
+  Neural Posterior Estimation for Bayesian Dynamic Borrowing\\
+  under Distributional Shift}
+
+% Author block MUST be left blank for anonymous submission.
+% Replace with real names/affiliations only in the camera-ready version.
+\author{%
+  \Name{Anonymous Author(s)}
+  \Email{anonymous@anonymous.edu}\\
+  \addr Anonymous Institution
+}
+
+% ---------------------------------------------------------------
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Leveraging external or historical cohorts to augment small concurrent studies
+is attractive in Alzheimer's disease research, where longitudinal follow-up is
+expensive and disease trajectories are heterogeneous.
+Bayesian dynamic borrowing (BDB) provides a principled mechanism for
+adaptively controlling the influence of external data, but classical
+implementations often rely on hand-tuned low-dimensional summaries and can be
+computationally expensive when fit separately for each new dataset pair.
+We study amortized neural posterior estimation (NPE) as a flexible alternative
+for dynamic borrowing under cohort shift.
+The method is trained offline on simulated current/external dataset pairs and
+then produces an approximate posterior for the current-study estimand with a
+single forward pass.
+We evaluate the approach in a controlled simulation study spanning six
+exchangeability regimes, including covariate shift, outcome drift, and joint
+non-exchangeability, and compare against representative dynamic borrowing and
+reweighting baselines.
+We then present a real-world case study using the Alzheimer's Disease
+Neuroimaging Initiative (ADNI), where ADNI1 is treated as an external cohort
+and ADNIGO/ADNI2 as a concurrent cohort among baseline mild cognitive
+impairment subjects, with 24-month conversion to dementia as the outcome.
+In this setting, the external and concurrent cohorts have materially different
+event rates, making naive borrowing poorly calibrated.
+The ADNI application is not framed as a randomized treatment-effect analysis;
+instead, it serves as a real-data borrowing example in which the NPE framework
+is adapted to infer a concurrent cohort risk-level parameter while allowing
+external outcome drift.
+Together, the simulation study and ADNI case study show how amortized
+posterior estimation can support adaptive borrowing under realistic source
+mismatch while retaining a computationally efficient inference pipeline.
+\end{abstract}
+
+\input{sections/001intro}
+\input{sections/002related}
+\input{sections/003problem_setup}
+\input{sections/004simulation}
+\input{sections/005adni}
+\input{sections/006discussion}
+
+
+\bibliography{refs}
+
+\end{document}
