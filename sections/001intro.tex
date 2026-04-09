@@ -1,5 +1,4 @@
 \section{Introduction}
-to fix
 External or historical cohorts are increasingly used to augment small
 concurrent studies in medicine.
 When the external and concurrent sources are sufficiently similar, borrowing
@@ -11,6 +10,9 @@ This tension is especially important in Alzheimer's disease research, where
 prospective follow-up is expensive, clinically meaningful outcomes accrue
 slowly, and related cohorts often differ in enrollment criteria, disease
 severity, and assessment practice.
+In practice, methods that can borrow safely from related cohorts may help make
+small studies more informative without treating historical data as fully
+exchangeable by default.
 
 Bayesian dynamic borrowing (BDB) provides a principled framework for
 adaptively controlling how much external information should influence
@@ -42,27 +44,34 @@ Neuroimaging Initiative (ADNI) \citep{petersen2010alzheimer,weiner2017alzheimer}
 Specifically, ADNI1 is treated as an external cohort and ADNIGO/ADNI2 as a
 concurrent cohort among baseline mild cognitive impairment (MCI) subjects, with
 24-month conversion to dementia as the outcome.
-This real-world application is not presented as a randomized treatment-effect
-analysis; rather, it is used to study borrowing under cohort shift in a
-clinically meaningful longitudinal dataset.
+The ADNI example is used as a real-data borrowing problem under cohort shift,
+rather than as a randomized treatment-effect analysis.
 
-The ADNI application serves two purposes.
-First, it provides an empirical check that the borrowing problem is real in
-practice: the external and concurrent cohorts have different event rates and
-therefore are not directly exchangeable.
-Second, it gives a setting in which we can adapt the NPE framework to infer a
-concurrent risk-level parameter while allowing the external cohort to differ
-through a nuisance shift parameter.
-This keeps the spirit of dynamic borrowing while avoiding an overstatement
-that the real-data example exactly matches the treatment-effect simulations.
+Our main contributions are as follows.
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+  \item We develop a summary-based NPE framework for Bayesian dynamic
+        borrowing that replaces repeated per-dataset fitting with amortized
+        posterior inference on paired current/external data.
+  \item We evaluate the method in a controlled simulation study spanning six
+        exchangeability regimes, including settings with covariate shift,
+        outcome drift, and joint non-exchangeability.
+  \item We show empirically that the main strength of the approach is
+        robustness in the harder mismatch settings, especially when the outcome
+        model differs across sources.
+  \item We present a real-data ADNI case study showing that the borrowing
+        problem also arises clearly in practice and that the proposed NPE
+        formulation can recover the concurrent cohort risk level more closely
+        than naive borrowing strategies.
+\end{itemize}
 
 The remainder of the paper is organized as follows.
 Section~\ref{sec:related} reviews dynamic borrowing, balancing methods, and
 simulation-based inference.
 Section~\ref{sec:problem} introduces the simulation regimes and the ADNI
 borrowing setup.
-Section~\ref{sec:figures_plan} presents the empirical design, summarizes the
-current simulation workflow, and reports the ADNI real-world application.
+Section~\ref{sec:simulation} presents the simulation study.
+Section~\ref{sec:adni} reports the ADNI real-data example.
+Section~\ref{sec:discussion} concludes with limitations and future directions.
 
 % -------------------------------------------------------
 % REQUIRED MLHC SECTION
