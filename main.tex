@@ -59,7 +59,8 @@ expensive and disease trajectories are heterogeneous.
 Bayesian dynamic borrowing (BDB) provides a principled mechanism for
 adaptively controlling the influence of external data, but classical
 implementations often rely on hand-tuned low-dimensional summaries and can be
-computationally expensive when fit separately for each new dataset pair.
+computationally expensive when posterior computation is repeated for each new
+dataset pair.
 We study amortized neural posterior estimation (NPE) as a flexible alternative
 for dynamic borrowing under cohort shift.
 The method is trained offline on simulated current/external dataset pairs and
@@ -81,7 +82,7 @@ is adapted to infer a concurrent cohort risk-level parameter while allowing
 external outcome drift.
 Together, the simulation study and ADNI case study show how amortized
 posterior estimation can support adaptive borrowing under realistic source
-mismatch while retaining a computationally efficient inference pipeline.
+mismatch while retaining fast reusable inference after offline training.
 \end{abstract}
 
 \input{sections/001intro}
@@ -91,6 +92,8 @@ mismatch while retaining a computationally efficient inference pipeline.
 \input{sections/005adni}
 \input{sections/006discussion}
 
+\appendix
+\input{sections/007appendix}
 
 \bibliography{refs}
 

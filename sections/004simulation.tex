@@ -18,7 +18,7 @@ The target parameter is the current-study effect $\theta$.
 \subsection{Methods compared}
 
 The main text comparison includes four methods:
-\begin{itemize}3
+\begin{itemize}
     \item \textbf{PSPower}, a propensity-score-stratified power prior;
     \item \textbf{IW}, an individualized weighting method;
     \item \textbf{Commensurate}, a commensurate-prior model;
@@ -26,7 +26,6 @@ The main text comparison includes four methods:
 \end{itemize}
 
 OT- and KL-based extensions are not included in the main text.
-We report those extensions in the appendix.
 
 \subsection{Evaluation metrics}
 
@@ -43,8 +42,7 @@ effect is zero.
 
 \subsection{Main results for the non-null setting}
 
-Table~\ref{tab:sim-main} shows the results for $\theta=1$.
-Two patterns stand out.
+The non-null run with $\theta=1$ shows two main patterns.
 First, in the easier settings, especially SC1 and SC2, the classical methods
 already perform well, and NPE is somewhat more variable.
 Second, once the outcome model differs across sources, the picture changes.
@@ -53,79 +51,36 @@ no coverage, while NPE remains much closer to the true target.
 In SC6, where both covariate and outcome mismatch are present, NPE is
 substantially more stable than PSPower and Commensurate, and is close to IW.
 
-\begin{table*}[t]
+Table~\ref{tab:sim-hard-summary} gives a compact summary of the harder
+settings for $N_c=100$. The full non-null and null simulation tables are
+reported in Appendix~\ref{app:additional-results}.
+
+\begin{table}[t]
 \centering
 \small
-\caption{Non-null simulation results ($\theta = 1$).}
-\label{tab:sim-main}
-\begin{tabular}{llccccc}
+\caption{Representative results in the harder settings ($N_c=100$).}
+\label{tab:sim-hard-summary}
+\begin{tabular}{llccc}
 \toprule
-$N_c$ & Scenario & Method & Bias & RMSE & Coverage & Power \\
+Scenario & Method & \shortstack{Bias\\($\theta=1$)} & \shortstack{Coverage\\($\theta=1$)} & \shortstack{Type I Error\\($\theta=0$)} \\
 \midrule
-\multirow{24}{*}{50}
-& SC1 & PSPower      & 0.0183 & 0.1268 & 0.90 & 1.00 \\
-& SC1 & IW           & 0.0365 & 0.1309 & 0.94 & 1.00 \\
-& SC1 & Commensurate & 0.0183 & 0.1234 & 0.90 & 1.00 \\
-& SC1 & NPE          & 0.2201 & 0.3049 & 0.94 & 1.00 \\
-\cmidrule(lr){2-7}
-& SC2 & PSPower      & -0.0126 & 0.1485 & 0.94 & 1.00 \\
-& SC2 & IW           & -0.0223 & 0.1505 & 0.98 & 1.00 \\
-& SC2 & Commensurate & -0.0160 & 0.1464 & 0.94 & 1.00 \\
-& SC2 & NPE          & 0.2202 & 0.3219 & 0.92 & 1.00 \\
-\cmidrule(lr){2-7}
-& SC3 & PSPower      & 1.1655 & 1.1693 & 0.00 & 1.00 \\
-& SC3 & IW           & 0.9306 & 0.9369 & 0.00 & 1.00 \\
-& SC3 & Commensurate & 1.1016 & 1.1091 & 0.00 & 1.00 \\
-& SC3 & NPE          & 0.1889 & 0.2859 & 0.98 & 1.00 \\
-\cmidrule(lr){2-7}
-& SC4 & PSPower      & 0.0432 & 0.1579 & 0.94 & 1.00 \\
-& SC4 & IW           & 0.0394 & 0.1697 & 0.98 & 1.00 \\
-& SC4 & Commensurate & 0.0347 & 0.1630 & 0.94 & 1.00 \\
-& SC4 & NPE          & 0.2661 & 0.3570 & 0.92 & 1.00 \\
-\cmidrule(lr){2-7}
-& SC5 & PSPower      & 1.1936 & 1.1993 & 0.00 & 1.00 \\
-& SC5 & IW           & 0.9810 & 0.9915 & 0.00 & 1.00 \\
-& SC5 & Commensurate & 1.1399 & 1.1488 & 0.00 & 1.00 \\
-& SC5 & NPE          & 0.2298 & 0.3115 & 0.94 & 1.00 \\
-\cmidrule(lr){2-7}
-& SC6 & PSPower      & 0.5617 & 0.5943 & 0.08 & 1.00 \\
-& SC6 & IW           & 0.2521 & 0.3167 & 0.68 & 1.00 \\
-& SC6 & Commensurate & 0.4765 & 0.5107 & 0.16 & 1.00 \\
-& SC6 & NPE          & 0.1311 & 0.2523 & 0.98 & 1.00 \\
-\midrule
-\multirow{24}{*}{100}
-& SC1 & PSPower      & 0.0178 & 0.1063 & 0.94 & 1.00 \\
-& SC1 & IW           & 0.0238 & 0.1205 & 0.98 & 1.00 \\
-& SC1 & Commensurate & 0.0183 & 0.1058 & 0.92 & 1.00 \\
-& SC1 & NPE          & 0.1413 & 0.2270 & 0.98 & 1.00 \\
-\cmidrule(lr){2-7}
-& SC2 & PSPower      & 0.0032 & 0.1261 & 0.94 & 1.00 \\
-& SC2 & IW           & 0.0044 & 0.1422 & 0.94 & 1.00 \\
-& SC2 & Commensurate & 0.0081 & 0.1195 & 0.94 & 1.00 \\
-& SC2 & NPE          & 0.1610 & 0.2532 & 0.98 & 1.00 \\
-\cmidrule(lr){2-7}
-& SC3 & PSPower      & 0.9587 & 0.9651 & 0.00 & 1.00 \\
-& SC3 & IW           & 0.6597 & 0.6701 & 0.00 & 1.00 \\
-& SC3 & Commensurate & 0.8586 & 0.8714 & 0.00 & 1.00 \\
-& SC3 & NPE          & 0.1518 & 0.2089 & 1.00 & 1.00 \\
-\cmidrule(lr){2-7}
-& SC4 & PSPower      & 0.0125 & 0.1576 & 0.86 & 1.00 \\
-& SC4 & IW           & 0.0013 & 0.1552 & 0.90 & 1.00 \\
-& SC4 & Commensurate & 0.0047 & 0.1497 & 0.90 & 1.00 \\
-& SC4 & NPE          & 0.1312 & 0.2352 & 1.00 & 1.00 \\
-\cmidrule(lr){2-7}
-& SC5 & PSPower      & 0.9547 & 0.9597 & 0.00 & 1.00 \\
-& SC5 & IW           & 0.6557 & 0.6681 & 0.00 & 1.00 \\
-& SC5 & Commensurate & 0.8564 & 0.8710 & 0.00 & 1.00 \\
-& SC5 & NPE          & 0.1299 & 0.1998 & 1.00 & 1.00 \\
-\cmidrule(lr){2-7}
-& SC6 & PSPower      & 0.3222 & 0.3595 & 0.32 & 1.00 \\
-& SC6 & IW           & 0.0733 & 0.1672 & 0.92 & 1.00 \\
-& SC6 & Commensurate & 0.2075 & 0.2633 & 0.54 & 1.00 \\
-& SC6 & NPE          & 0.0668 & 0.1835 & 0.98 & 1.00 \\
+SC3 & PSPower      & 0.9587 & 0.00 & 1.00 \\
+SC3 & IW           & 0.6597 & 0.00 & 1.00 \\
+SC3 & Commensurate & 0.8586 & 0.00 & 1.00 \\
+SC3 & NPE          & 0.1518 & 1.00 & 0.02 \\
+\cmidrule(lr){1-5}
+SC5 & PSPower      & 0.9547 & 0.00 & 1.00 \\
+SC5 & IW           & 0.6557 & 0.00 & 1.00 \\
+SC5 & Commensurate & 0.8564 & 0.00 & 1.00 \\
+SC5 & NPE          & 0.1299 & 1.00 & 0.04 \\
+\cmidrule(lr){1-5}
+SC6 & PSPower      & 0.3222 & 0.32 & 0.68 \\
+SC6 & IW           & 0.0733 & 0.92 & 0.08 \\
+SC6 & Commensurate & 0.2075 & 0.54 & 0.46 \\
+SC6 & NPE          & 0.0668 & 0.98 & 0.06 \\
 \bottomrule
 \end{tabular}
-\end{table*}
+\end{table}
 
 Figures~\ref{fig:sim-bias}--\ref{fig:sim-power} show the same results.
 To keep the main text simple, we show bias, RMSE, coverage, and power in the
@@ -161,7 +116,7 @@ figures.
 
 \subsection{Null results}
 
-Table~\ref{tab:sim-null} summarizes the null run with $\theta=0$.
+The null run with $\theta=0$ gives a similar robustness pattern.
 Here the main quantity of interest is Type I error.
 In SC1 and SC2, the classical methods still have cleaner operating
 characteristics, although NPE remains in a reasonable range.
@@ -170,79 +125,7 @@ In SC3, SC5, and SC6, the classical borrowing methods have very poor coverage
 and severely inflated Type I error, while NPE stays much closer to nominal
 behavior.
 
-\begin{table*}[t]
-\centering
-\small
-\caption{Null simulation results ($\theta = 0$).}
-\label{tab:sim-null}
-\begin{tabular}{llcccc}
-\toprule
-$N_c$ & Scenario & Method & Bias & RMSE & Coverage & Type I Error \\
-\midrule
-\multirow{24}{*}{50}
-& SC1 & PSPower      & 0.0187 & 0.1269 & 0.90 & 0.10 \\
-& SC1 & IW           & 0.0373 & 0.1311 & 0.94 & 0.06 \\
-& SC1 & Commensurate & 0.0187 & 0.1235 & 0.90 & 0.10 \\
-& SC1 & NPE          & 0.3172 & 0.3811 & 0.90 & 0.10 \\
-\cmidrule(lr){2-7}
-& SC2 & PSPower      & -0.0117 & 0.1485 & 0.94 & 0.06 \\
-& SC2 & IW           & -0.0212 & 0.1503 & 0.98 & 0.02 \\
-& SC2 & Commensurate & -0.0152 & 0.1463 & 0.94 & 0.06 \\
-& SC2 & NPE          & 0.2954 & 0.3703 & 0.90 & 0.10 \\
-\cmidrule(lr){2-7}
-& SC3 & PSPower      & 1.1659 & 1.1698 & 0.00 & 1.00 \\
-& SC3 & IW           & 0.9314 & 0.9377 & 0.00 & 1.00 \\
-& SC3 & Commensurate & 1.1022 & 1.1096 & 0.00 & 1.00 \\
-& SC3 & NPE          & 0.3333 & 0.4062 & 0.92 & 0.08 \\
-\cmidrule(lr){2-7}
-& SC4 & PSPower      & 0.0441 & 0.1582 & 0.96 & 0.04 \\
-& SC4 & IW           & 0.0406 & 0.1700 & 0.98 & 0.02 \\
-& SC4 & Commensurate & 0.0355 & 0.1632 & 0.94 & 0.06 \\
-& SC4 & NPE          & 0.3495 & 0.4082 & 0.86 & 0.14 \\
-\cmidrule(lr){2-7}
-& SC5 & PSPower      & 1.1941 & 1.1997 & 0.00 & 1.00 \\
-& SC5 & IW           & 0.9817 & 0.9923 & 0.00 & 1.00 \\
-& SC5 & Commensurate & 1.1404 & 1.1493 & 0.00 & 1.00 \\
-& SC5 & NPE          & 0.4052 & 0.4649 & 0.84 & 0.16 \\
-\cmidrule(lr){2-7}
-& SC6 & PSPower      & 0.5626 & 0.5952 & 0.08 & 0.92 \\
-& SC6 & IW           & 0.2533 & 0.3176 & 0.68 & 0.32 \\
-& SC6 & Commensurate & 0.4774 & 0.5114 & 0.18 & 0.82 \\
-& SC6 & NPE          & 0.2874 & 0.3508 & 0.92 & 0.08 \\
-\midrule
-\multirow{24}{*}{100}
-& SC1 & PSPower      & 0.0182 & 0.1063 & 0.94 & 0.06 \\
-& SC1 & IW           & 0.0245 & 0.1206 & 0.98 & 0.02 \\
-& SC1 & Commensurate & 0.0187 & 0.1059 & 0.92 & 0.08 \\
-& SC1 & NPE          & 0.2542 & 0.3022 & 0.92 & 0.08 \\
-\cmidrule(lr){2-7}
-& SC2 & PSPower      & 0.0039 & 0.1262 & 0.94 & 0.06 \\
-& SC2 & IW           & 0.0052 & 0.1422 & 0.94 & 0.06 \\
-& SC2 & Commensurate & 0.0087 & 0.1195 & 0.94 & 0.06 \\
-& SC2 & NPE          & 0.3132 & 0.3690 & 0.92 & 0.08 \\
-\cmidrule(lr){2-7}
-& SC3 & PSPower      & 0.9591 & 0.9655 & 0.00 & 1.00 \\
-& SC3 & IW           & 0.6603 & 0.6707 & 0.00 & 1.00 \\
-& SC3 & Commensurate & 0.8593 & 0.8721 & 0.00 & 1.00 \\
-& SC3 & NPE          & 0.3574 & 0.3776 & 0.98 & 0.02 \\
-\cmidrule(lr){2-7}
-& SC4 & PSPower      & 0.0132 & 0.1576 & 0.86 & 0.14 \\
-& SC4 & IW           & 0.0021 & 0.1551 & 0.92 & 0.08 \\
-& SC4 & Commensurate & 0.0053 & 0.1497 & 0.90 & 0.10 \\
-& SC4 & NPE          & 0.2651 & 0.3219 & 0.98 & 0.02 \\
-\cmidrule(lr){2-7}
-& SC5 & PSPower      & 0.9551 & 0.9601 & 0.00 & 1.00 \\
-& SC5 & IW           & 0.6563 & 0.6687 & 0.00 & 1.00 \\
-& SC5 & Commensurate & 0.8571 & 0.8716 & 0.00 & 1.00 \\
-& SC5 & NPE          & 0.3322 & 0.3523 & 0.96 & 0.04 \\
-\cmidrule(lr){2-7}
-& SC6 & PSPower      & 0.3229 & 0.3601 & 0.32 & 0.68 \\
-& SC6 & IW           & 0.0741 & 0.1675 & 0.92 & 0.08 \\
-& SC6 & Commensurate & 0.2082 & 0.2638 & 0.54 & 0.46 \\
-& SC6 & NPE          & 0.2651 & 0.3115 & 0.94 & 0.06 \\
-\bottomrule
-\end{tabular}
-\end{table*}
+The full null table is reported in Appendix~\ref{app:additional-results}.
 
 \begin{figure}[!htbp]
     \centering
