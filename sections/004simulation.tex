@@ -55,13 +55,14 @@ Table~\ref{tab:sim-hard-summary} gives a compact summary of the harder
 settings for $N_c=100$. The full non-null and null simulation tables are
 reported in Appendix~\ref{app:additional-results}.
 
-\begin{table*}[t]
+\begin{table}[t]
 \centering
-\small
+\scriptsize
 \caption{Representative results in the harder settings ($N_c=100$). Bias and
 coverage are from the non-null run with $\theta=1$; Type I error is from the
 null run with $\theta=0$.}
 \label{tab:sim-hard-summary}
+\setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}llccc@{}}
 \toprule
 Scenario & Method & Bias & Coverage & Type I Error \\
@@ -82,7 +83,7 @@ SC6 & Commensurate & 0.21 & 0.54 & 0.46 \\
 SC6 & NPE          & 0.07 & 0.98 & 0.06 \\
 \bottomrule
 \end{tabular}
-\end{table*}
+\end{table}
 
 Figures~\ref{fig:sim-bias}--\ref{fig:sim-power} show the same results.
 To keep the main text simple, we show bias, RMSE, coverage, and power in the
@@ -142,6 +143,8 @@ The full null table is reported in Appendix~\ref{app:additional-results}.
     \caption{Type I error across the six simulation scenarios for the null run.}
     \label{fig:sim-type1}
 \end{figure}
+
+\FloatBarrier
 
 \subsection{Computational timing}
 
