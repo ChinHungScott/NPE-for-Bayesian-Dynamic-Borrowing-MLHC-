@@ -146,10 +146,9 @@ The full null table is reported in Appendix~\ref{app:additional-results}.
 
 \subsection{Computational timing}
 
-\begin{table}[H]
-\centering
+\begin{center}
 \small
-\caption{Online runtime comparison over 600 simulated analyses. NPE time excludes
+\captionof{table}{Online runtime comparison over 600 simulated analyses. NPE time excludes
 the one-time offline training cost.}
 \label{tab:runtime-online}
 \begin{tabular}{@{}lcccc@{}}
@@ -162,7 +161,7 @@ NPE & 600 & 12.0 & 11.6 & 89.6$\times$ \\
 Commensurate & 600 & 1074 & 1069 & 1.0$\times$ \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{center}
 
 We also measured wall-clock online inference time over 600 simulated analyses
 in Google Colab using a T4 GPU.

@@ -3,7 +3,7 @@
 
 \subsection{Full Simulation Tables}
 
-Tables~\ref{tab:sim-full-nonnull}--\ref{tab:sim-full-null-100} report the full
+Tables~\ref{tab:sim-full-nonnull} and \ref{tab:sim-full-null} report the full
 simulation results corresponding to the main-text figures.
 
 \scriptsize
@@ -83,17 +83,21 @@ $N_c$ & Scenario & Method & Bias & RMSE & Coverage & Power \\
 \end{longtable}
 \normalsize
 
-\begin{table*}[p]
-\centering
 \scriptsize
-\setlength{\tabcolsep}{5pt}
+\setlength{\tabcolsep}{3pt}
 \renewcommand{\arraystretch}{1.08}
-\caption{Full null simulation results ($\theta = 0$) for $N_c=50$.}
-\label{tab:sim-full-null-50}
-\begin{tabular}{llcccc}
+\begin{longtable}{llcccc}
+\caption{Full null simulation results ($\theta = 0$).}
+\label{tab:sim-full-null}\\
 \toprule
-Scenario & Method & Bias & RMSE & Coverage & Type I Error \\
+Scenario & Method & Bias & RMSE & Coverage & Type I \\
 \midrule
+\endfirsthead
+\toprule
+Scenario & Method & Bias & RMSE & Coverage & Type I \\
+\midrule
+\endhead
+\multicolumn{6}{l}{$N_c=50$} \\
 SC1 & PSPower      & 0.0187 & 0.1269 & 0.90 & 0.10 \\
 SC1 & IW           & 0.0373 & 0.1311 & 0.94 & 0.06 \\
 SC1 & Commensurate & 0.0187 & 0.1235 & 0.90 & 0.10 \\
@@ -123,21 +127,8 @@ SC6 & PSPower      & 0.5626 & 0.5952 & 0.08 & 0.92 \\
 SC6 & IW           & 0.2533 & 0.3176 & 0.68 & 0.32 \\
 SC6 & Commensurate & 0.4774 & 0.5114 & 0.18 & 0.82 \\
 SC6 & NPE          & 0.2874 & 0.3508 & 0.92 & 0.08 \\
-\bottomrule
-\end{tabular}
-\end{table*}
-
-\begin{table*}[p]
-\centering
-\scriptsize
-\setlength{\tabcolsep}{5pt}
-\renewcommand{\arraystretch}{1.08}
-\caption{Full null simulation results ($\theta = 0$) for $N_c=100$.}
-\label{tab:sim-full-null-100}
-\begin{tabular}{llcccc}
-\toprule
-Scenario & Method & Bias & RMSE & Coverage & Type I Error \\
 \midrule
+\multicolumn{6}{l}{$N_c=100$} \\
 SC1 & PSPower      & 0.0182 & 0.1063 & 0.94 & 0.06 \\
 SC1 & IW           & 0.0245 & 0.1206 & 0.98 & 0.02 \\
 SC1 & Commensurate & 0.0187 & 0.1059 & 0.92 & 0.08 \\
@@ -168,7 +159,6 @@ SC6 & IW           & 0.0741 & 0.1675 & 0.92 & 0.08 \\
 SC6 & Commensurate & 0.2082 & 0.2638 & 0.54 & 0.46 \\
 SC6 & NPE          & 0.2651 & 0.3115 & 0.94 & 0.06 \\
 \bottomrule
-\end{tabular}
-\end{table*}
+\end{longtable}
 \normalsize
 \renewcommand{\arraystretch}{1}
