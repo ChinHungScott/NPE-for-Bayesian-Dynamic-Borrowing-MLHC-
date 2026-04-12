@@ -141,6 +141,37 @@ The full null table is reported in Appendix~\ref{app:additional-results}.
     \label{fig:sim-type1}
 \end{figure}
 
+\subsection{Computational timing}
+
+We also measured wall-clock online inference time over 600 simulated analyses
+in Google Colab using a T4 GPU.
+These timings exclude the one-time offline NPE training cost and measure only
+the time needed to analyze a new current--external dataset pair.
+As shown in Table~\ref{tab:runtime-online}, IW and PSPower are fastest in this
+implementation.
+However, NPE still runs at millisecond scale after training and is much faster
+than the commensurate model.
+The one-time NPE training run took 46.8 seconds; relative to the commensurate
+model, this cost is recovered after approximately 45 repeated analyses.
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Online runtime comparison over 600 simulated analyses. NPE time excludes
+the one-time offline training cost.}
+\label{tab:runtime-online}
+\begin{tabular}{lcccc}
+\toprule
+Method & Runs & Mean ms & Median ms & Speedup vs. Commensurate \\
+\midrule
+IW & 600 & 1.22 & 1.04 & 879$\times$ \\
+PSPower & 600 & 8.50 & 6.28 & 126$\times$ \\
+NPE & 600 & 12.0 & 11.6 & 89.6$\times$ \\
+Commensurate & 600 & 1074 & 1069 & 1.0$\times$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \subsection{Interpretation}
 
 The simulation results do not suggest that NPE is best in every setting.
