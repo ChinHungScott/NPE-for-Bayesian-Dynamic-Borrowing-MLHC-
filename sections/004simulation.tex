@@ -25,8 +25,6 @@ The main text comparison includes four methods:
     \item \textbf{NPE}, the proposed neural posterior estimation method.
 \end{itemize}
 
-OT- and KL-based extensions are not included in the main text.
-
 \subsection{Evaluation metrics}
 
 We use two simulation settings.
@@ -148,19 +146,6 @@ The full null table is reported in Appendix~\ref{app:additional-results}.
 
 \subsection{Computational timing}
 
-We also measured wall-clock online inference time over 600 simulated analyses
-in Google Colab using a T4 GPU.
-Table~\ref{tab:runtime-online} reports online runtime, excluding the one-time
-offline NPE training cost, and therefore measures only the time needed to
-analyze a new current--external dataset pair.
-IW and PSPower are fastest in this implementation because they are lightweight
-regression/reweighting procedures.
-The commensurate-prior implementation is MCMC-based, using burn-in and
-posterior draws, and is therefore the most relevant computational baseline for
-repeated Bayesian posterior inference.
-Against this baseline, NPE is about 90 times faster after training, while still
-returning a full approximate posterior.
-
 \begin{table}[H]
 \centering
 \small
@@ -178,6 +163,19 @@ Commensurate & 600 & 1074 & 1069 & 1.0$\times$ \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+We also measured wall-clock online inference time over 600 simulated analyses
+in Google Colab using a T4 GPU.
+Table~\ref{tab:runtime-online} reports online runtime, excluding the one-time
+offline NPE training cost, and therefore measures only the time needed to
+analyze a new current--external dataset pair.
+IW and PSPower are fastest in this implementation because they are lightweight
+regression/reweighting procedures.
+The commensurate-prior implementation is MCMC-based, using burn-in and
+posterior draws, and is therefore the most relevant computational baseline for
+repeated Bayesian posterior inference.
+Against this baseline, NPE is about 90 times faster after training, while still
+returning a full approximate posterior.
 
 Figure~\ref{fig:runtime-cumulative} shows cumulative runtime when the one-time
 NPE training cost is included.
