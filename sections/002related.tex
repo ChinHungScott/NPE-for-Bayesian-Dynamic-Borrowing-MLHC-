@@ -109,23 +109,3 @@ where the primary challenge is compressing data without losing information
 about a single target parameter.
 In borrowing problems, the representation must also preserve structure that is
 informative about when external data should and should not influence inference.
-
-\subsection{Transformers and patient trajectory representations (Might remove this one?)}
-
-Transformers \citep{vaswani2017attention} are now widely used in EHR and
-longitudinal health-data modeling.
-Methods such as BEHRT \citep{li2020behrt} and Med-BERT
-\citep{rasmy2021medbert} treat diagnoses, medications, and procedures as
-tokens and learn contextualized patient representations through BERT-style
-pretraining.
-These models are well suited to irregular and heterogeneous clinical records,
-where temporal ordering and co-occurrence patterns both matter.
-
-The goal in the present setting, however, is different from standard clinical
-prediction.
-Rather than learning a representation solely for outcome classification or risk
-prediction, the representation should support posterior inference under
-borrowing.
-In particular, it should summarize clinically meaningful longitudinal
-structure within each cohort while preserving information about differences
-between cohorts that may affect the appropriateness of borrowing.
