@@ -167,9 +167,14 @@ SC6 & NPE          & 0.2651 & 0.3115 & 0.94 & 0.06 \\
 
 We also ran exploratory non-null simulations for several NPE variants that add
 explicit source-discrepancy summaries to the input representation.
-These variants are not part of the main comparison, but they provide a check
-on whether adding discrepancy features changes behavior in the harder
-simulation settings.
+The goal of these variants was to see whether additional discrepancy features
+could reduce bias in the harder mismatch settings.
+The added summaries include Kullback--Leibler (KL) divergence, optimal
+transport (OT) distance, the Kolmogorov--Smirnov (KS) statistic, a combined
+KL+KS representation, and Jensen--Shannon divergence (JSD).
+These variants are not part of the main comparison, but they provide a check on
+whether explicit discrepancy features change behavior in the harder simulation
+settings.
 Table~\ref{tab:npe-extensions-hard} reports representative results for
 $N_c=100$ in SC3, SC5, and SC6.
 
