@@ -162,3 +162,44 @@ SC6 & NPE          & 0.2651 & 0.3115 & 0.94 & 0.06 \\
 \end{longtable}
 \normalsize
 \renewcommand{\arraystretch}{1}
+
+\subsection{Exploratory NPE Extensions}
+
+We also ran exploratory non-null simulations for several NPE variants that add
+explicit source-discrepancy summaries to the input representation.
+These variants are not part of the main comparison, but they provide a check
+on whether adding discrepancy features changes behavior in the harder
+simulation settings.
+Table~\ref{tab:npe-extensions-hard} reports representative results for
+$N_c=100$ in SC3, SC5, and SC6.
+
+\begin{table*}[t]
+\centering
+\small
+\caption{Exploratory NPE extensions in the harder non-null settings
+($N_c=100$, $\theta=1$).}
+\label{tab:npe-extensions-hard}
+\begin{tabular}{llccc}
+\toprule
+Scenario & Method & Bias & RMSE & Power \\
+\midrule
+SC3 & NPE        & 0.1320  & 0.2223 & 1.00 \\
+SC3 & KL-NPE     & 0.0242  & 0.1905 & 0.98 \\
+SC3 & OT-NPE     & 0.0757  & 0.2013 & 1.00 \\
+SC3 & KL+KS-NPE  & 0.0964  & 0.2037 & 1.00 \\
+SC3 & JSD-NPE    & 0.1769  & 0.2498 & 1.00 \\
+\cmidrule(lr){1-5}
+SC5 & NPE        & 0.1483  & 0.2205 & 1.00 \\
+SC5 & KL-NPE     & 0.0353  & 0.1644 & 1.00 \\
+SC5 & OT-NPE     & 0.1320  & 0.3510 & 1.00 \\
+SC5 & KL+KS-NPE  & 0.1278  & 0.1923 & 1.00 \\
+SC5 & JSD-NPE    & 0.1880  & 0.2474 & 1.00 \\
+\cmidrule(lr){1-5}
+SC6 & NPE        & -0.1191 & 0.1907 & 0.96 \\
+SC6 & KL-NPE     & -0.0467 & 0.1560 & 1.00 \\
+SC6 & OT-NPE     & -0.0865 & 0.1605 & 0.98 \\
+SC6 & KL+KS-NPE  & -0.1166 & 0.1811 & 1.00 \\
+SC6 & JSD-NPE    & -0.1121 & 0.1647 & 1.00 \\
+\bottomrule
+\end{tabular}
+\end{table*}
