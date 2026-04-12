@@ -55,32 +55,34 @@ Table~\ref{tab:sim-hard-summary} gives a compact summary of the harder
 settings for $N_c=100$. The full non-null and null simulation tables are
 reported in Appendix~\ref{app:additional-results}.
 
-\begin{table}[t]
+\begin{table*}[t]
 \centering
 \small
-\caption{Representative results in the harder settings ($N_c=100$).}
+\caption{Representative results in the harder settings ($N_c=100$). Bias and
+coverage are from the non-null run with $\theta=1$; Type I error is from the
+null run with $\theta=0$.}
 \label{tab:sim-hard-summary}
-\begin{tabular}{llccc}
+\begin{tabular}{@{}llccc@{}}
 \toprule
-Scenario & Method & \shortstack{Bias\\($\theta=1$)} & \shortstack{Coverage\\($\theta=1$)} & \shortstack{Type I Error\\($\theta=0$)} \\
+Scenario & Method & Bias & Coverage & Type I Error \\
 \midrule
-SC3 & PSPower      & 0.9587 & 0.00 & 1.00 \\
-SC3 & IW           & 0.6597 & 0.00 & 1.00 \\
-SC3 & Commensurate & 0.8586 & 0.00 & 1.00 \\
-SC3 & NPE          & 0.1518 & 1.00 & 0.02 \\
+SC3 & PSPower      & 0.96 & 0.00 & 1.00 \\
+SC3 & IW           & 0.66 & 0.00 & 1.00 \\
+SC3 & Commensurate & 0.86 & 0.00 & 1.00 \\
+SC3 & NPE          & 0.15 & 1.00 & 0.02 \\
 \cmidrule(lr){1-5}
-SC5 & PSPower      & 0.9547 & 0.00 & 1.00 \\
-SC5 & IW           & 0.6557 & 0.00 & 1.00 \\
-SC5 & Commensurate & 0.8564 & 0.00 & 1.00 \\
-SC5 & NPE          & 0.1299 & 1.00 & 0.04 \\
+SC5 & PSPower      & 0.95 & 0.00 & 1.00 \\
+SC5 & IW           & 0.66 & 0.00 & 1.00 \\
+SC5 & Commensurate & 0.86 & 0.00 & 1.00 \\
+SC5 & NPE          & 0.13 & 1.00 & 0.04 \\
 \cmidrule(lr){1-5}
-SC6 & PSPower      & 0.3222 & 0.32 & 0.68 \\
-SC6 & IW           & 0.0733 & 0.92 & 0.08 \\
-SC6 & Commensurate & 0.2075 & 0.54 & 0.46 \\
-SC6 & NPE          & 0.0668 & 0.98 & 0.06 \\
+SC6 & PSPower      & 0.32 & 0.32 & 0.68 \\
+SC6 & IW           & 0.07 & 0.92 & 0.08 \\
+SC6 & Commensurate & 0.21 & 0.54 & 0.46 \\
+SC6 & NPE          & 0.07 & 0.98 & 0.06 \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 Figures~\ref{fig:sim-bias}--\ref{fig:sim-power} show the same results.
 To keep the main text simple, we show bias, RMSE, coverage, and power in the
@@ -160,9 +162,9 @@ model, this cost is recovered after approximately 45 repeated analyses.
 \caption{Online runtime comparison over 600 simulated analyses. NPE time excludes
 the one-time offline training cost.}
 \label{tab:runtime-online}
-\begin{tabular}{lcccc}
+\begin{tabular}{@{}lcccc@{}}
 \toprule
-Method & Runs & Mean ms & Median ms & Speedup vs. Commensurate \\
+Method & Runs & Mean ms & Median ms & Speedup \\
 \midrule
 IW & 600 & 1.22 & 1.04 & 879$\times$ \\
 PSPower & 600 & 8.50 & 6.28 & 126$\times$ \\
