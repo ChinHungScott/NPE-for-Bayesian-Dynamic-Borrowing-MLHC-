@@ -150,14 +150,16 @@ The full null table is reported in Appendix~\ref{app:additional-results}.
 
 We also measured wall-clock online inference time over 600 simulated analyses
 in Google Colab using a T4 GPU.
-These timings exclude the one-time offline NPE training cost and measure only
-the time needed to analyze a new current--external dataset pair.
-As shown in Table~\ref{tab:runtime-online}, IW and PSPower are fastest in this
-implementation.
-However, NPE still runs at millisecond scale after training and is much faster
-than the commensurate model.
-The one-time NPE training run took 46.8 seconds; relative to the commensurate
-model, this cost is recovered after approximately 45 repeated analyses.
+Table~\ref{tab:runtime-online} reports online runtime, excluding the one-time
+offline NPE training cost, and therefore measures only the time needed to
+analyze a new current--external dataset pair.
+IW and PSPower are fastest in this implementation because they are lightweight
+regression/reweighting procedures.
+The commensurate-prior implementation is MCMC-based, using burn-in and
+posterior draws, and is therefore the most relevant computational baseline for
+repeated Bayesian posterior inference.
+Against this baseline, NPE is about 90 times faster after training, while still
+returning a full approximate posterior.
 
 \begin{table}[H]
 \centering
@@ -176,6 +178,23 @@ Commensurate & 600 & 1074 & 1069 & 1.0$\times$ \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+Figure~\ref{fig:runtime-cumulative} shows cumulative runtime when the one-time
+NPE training cost is included.
+The NPE training run took 46.8 seconds; relative to the commensurate model,
+this cost is recovered after approximately 45 repeated analyses.
+Thus, the computational advantage of NPE is not that it is the cheapest method
+for a single simple fit, but that posterior inference is amortized once many
+dataset pairs must be analyzed.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.74\textwidth]{runtime_cumulative.pdf}
+    \caption{Cumulative runtime across repeated simulated analyses. The NPE
+    curve includes the one-time offline training cost plus online inference for
+    each new dataset pair.}
+    \label{fig:runtime-cumulative}
+\end{figure}
 
 \FloatBarrier
 
