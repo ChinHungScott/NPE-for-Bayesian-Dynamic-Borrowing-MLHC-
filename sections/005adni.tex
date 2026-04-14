@@ -186,6 +186,12 @@ NPE & $\theta_c$ & $-1.599$ & 0.859 & $(-3.301,\ 0.108)$ \\
 \end{tabular}
 \end{table}
 
+Thus, NPE and the commensurate model give nearly identical posterior centers for
+the concurrent risk level in this ADNI example, although the NPE interval is
+wider. In light of the timing results in Section~\ref{sec:simulation}, the
+advantage of NPE here is not greater precision but comparable centering with
+fast amortized online inference.
+
 The main ADNI analysis uses one trained model with $\delta_{\mathrm{sd}}=0.75$.
 As a sensitivity analysis, we varied the training scale for the external-source
 shift parameter from 0.50 to 1.25 and repeated each setting over five training
@@ -223,4 +229,5 @@ replacement for the simulation study, but rather as a concrete example showing
 that the borrowing problem is not only a theoretical concern.
 
 \FloatBarrier
+
 
