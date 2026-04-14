@@ -1,4 +1,4 @@
-\section{Real-Data Example: ADNI}
+﻿\section{Real-Data Example: ADNI}
 \label{sec:adni}
 
 We complement the simulation study with a real-data example based on the
@@ -152,28 +152,36 @@ Empirical concurrent logit     & $-1.5841$ \\
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:adni-comparators} compares this estimate with several simple
-reference values. The empirical external-only logit and pooled logit are both
-substantially above the concurrent target. Even the offset-based MLE estimates
-remain noticeably higher than the concurrent empirical logit. Among the
-estimators considered here, the NPE posterior mean is the closest to the
-concurrent target.
+To place this result in context, we also fit simple Bayesian borrowing
+comparators on the cohort-level logit-risk scale. In these models,
+$\theta_c$ denotes the current-cohort logit risk and $\theta_e$ denotes the
+external-cohort logit risk. The comparison is made using the marginal posterior
+for $\theta_c$; for the commensurate model, we also report the marginal
+posterior for $\theta_e$ to show how the model separates the two cohorts.
+
+Table~\ref{tab:adni-comparators} shows the posterior summaries. The
+concurrent-only posterior is centered near the observed concurrent logit,
+whereas the pooled posterior is pulled toward the higher-risk ADNI1 cohort. A
+fixed power-prior analysis with $a_0=0.5$ reduces this pull but remains between
+the concurrent and pooled estimates. The commensurate model learns distinct
+current and external risk levels. NPE is also centered near the concurrent
+risk level, although its posterior interval is wider.
 
 \begin{table}[t]
 \centering
-\caption{Comparator estimates in the ADNI real-data example.}
+\small
+\caption{Bayesian posterior comparison in the ADNI real-data example. All methods are reported on the cohort-level logit-risk scale.}
 \label{tab:adni-comparators}
-\begin{tabular}{lc}
+\begin{tabular}{llccc}
 \toprule
-Estimator & Value \\
+Method & Parameter & Mean & SD & 95\% interval \\
 \midrule
-Empirical logit (concurrent)        & $-1.5841$ \\
-Empirical logit (external)          & $-0.5029$ \\
-Empirical logit (pooled)            & $-1.0054$ \\
-Offset-MLE $\theta$ (concurrent)    & $-1.0749$ \\
-Offset-MLE $\theta$ (pooled)        & $-0.7240$ \\
-Offset-MLE $\delta$ (external shift)& $0.6022$ \\
-NPE posterior mean $\theta$         & $-1.5990$ \\
+Concurrent-only & $\theta_c$ & $-1.589$ & 0.138 & $(-1.868,\ -1.328)$ \\
+Pooled & $\theta_c=\theta_e$ & $-1.007$ & 0.085 & $(-1.177,\ -0.845)$ \\
+Power prior ($a_0=0.5$) & $\theta_c=\theta_e$ & $-1.187$ & 0.101 & $(-1.391,\ -0.994)$ \\
+Commensurate & $\theta_c$ & $-1.569$ & 0.135 & $(-1.843,\ -1.312)$ \\
+Commensurate & $\theta_e$ & $-0.518$ & 0.112 & $(-0.742,\ -0.302)$ \\
+NPE & $\theta_c$ & $-1.599$ & 0.859 & $(-3.301,\ 0.108)$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -209,8 +217,10 @@ $\delta$ SD & Posterior mean & Posterior SD & 95\% interval & Interval width \\
 Overall, the ADNI analysis supports the same broad message as the simulation
 study. The earlier and later cohorts are not directly comparable, and direct
 borrowing tends to push the estimated risk upward. The ADNI-specific NPE
-formulation is much closer to the concurrent target. We do not view this as a
+formulation is centered close to the concurrent target, while remaining
+conservative about uncertainty. We do not view this as a
 replacement for the simulation study, but rather as a concrete example showing
 that the borrowing problem is not only a theoretical concern.
 
 \FloatBarrier
+
