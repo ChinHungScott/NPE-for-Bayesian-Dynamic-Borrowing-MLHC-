@@ -169,22 +169,31 @@ Figure~\ref{fig:app-sim-additional} reports the remaining simulation summaries.
 These plots are included for completeness; the full numerical results are given in
 Tables~\ref{tab:sim-full-nonnull} and \ref{tab:sim-full-null}.
 
-\begin{figure}[!p]
+\begin{center}
+\begin{minipage}{.48\textwidth}
     \centering
-    \includegraphics[width=.54\textwidth]{fig_sim_rmse_focus.pdf}\par
-    \vspace{-0.6em}
-    {\footnotesize (a) RMSE in the non-null run.}\par
-    \vspace{0.2em}
-    \includegraphics[width=.54\textwidth]{fig_sim_power_focus.pdf}\par
-    \vspace{-0.6em}
-    {\footnotesize (b) Power in the non-null run.}\par
-    \vspace{0.2em}
-    \includegraphics[width=.54\textwidth]{fig_sim_coverage_null_focus.pdf}\par
-    \vspace{-0.6em}
+    \includegraphics[width=\linewidth]{fig_sim_rmse_focus.pdf}\par
+    \vspace{-0.8em}
+    {\footnotesize (a) RMSE in the non-null run.}
+\end{minipage}\hfill
+\begin{minipage}{.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{fig_sim_power_focus.pdf}\par
+    \vspace{-0.8em}
+    {\footnotesize (b) Power in the non-null run.}
+\end{minipage}
+
+\vspace{0.4em}
+\begin{minipage}{.52\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{fig_sim_coverage_null_focus.pdf}\par
+    \vspace{-0.8em}
     {\footnotesize (c) Coverage in the null run.}
-    \caption{Additional simulation summaries not shown in the main text.}
-    \label{fig:app-sim-additional}
-\end{figure}
+\end{minipage}
+\captionof{figure}{Additional simulation summaries not shown in the main text.}
+\label{fig:app-sim-additional}
+\end{center}
+\FloatBarrier
 \subsection{Exploratory NPE Extensions}
 
 We also ran exploratory non-null simulations for several NPE variants that add
@@ -233,13 +242,3 @@ SC6 & JSD-NPE    & -0.1121 & 0.1647 & 1.00 \\
 \bottomrule
 \end{tabular}
 \end{table}
-<<<<<<< HEAD
-=======
-
-
-
-
-
-
-
->>>>>>> parent of 94e9eff (Update 007appendix.tex)
