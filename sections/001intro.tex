@@ -3,7 +3,7 @@ External or historical cohorts are increasingly used to augment small
 concurrent studies in medicine.
 When the external and concurrent sources are sufficiently similar, borrowing
 can improve efficiency and stabilize estimation.
-When the sources differ in meaningful ways, however, naive borrowing can
+When the sources differ in important ways, however, naive borrowing can
 introduce bias and distort uncertainty quantification
 \citep{viele2014use}.
 This tension is especially important in Alzheimer's disease research, where
@@ -14,7 +14,7 @@ In practice, methods that can borrow safely from related cohorts may help make
 small studies more informative without treating historical data as fully
 exchangeable by default.
 
-Bayesian dynamic borrowing (BDB) provides a principled framework for
+Bayesian dynamic borrowing (BDB) provides a Bayesian framework for
 adaptively controlling how much external information should influence
 current-study inference
 \citep{ibrahim2000power,hobbs2011commensurate,neuenschwander2010summarizing,
@@ -23,7 +23,7 @@ Classical BDB methods such as the power prior, commensurate prior, and robust
 MAP prior have strong statistical motivation, but in practice they still
 require repeated model fitting for each new dataset pair and often summarize
 cross-source compatibility through one or a few low-dimensional quantities.
-That can be restrictive in settings where source mismatch is multi-faceted.
+That can be restrictive when the two sources differ in more than one way.
 
 Amortized neural posterior estimation (NPE) offers a different route.
 Instead of rerunning MCMC or numerical optimization for every new
@@ -49,7 +49,7 @@ rather than as a randomized treatment-effect analysis.
 
 Our main contributions are as follows.
 \begin{itemize}[leftmargin=1.5em, itemsep=2pt]
-  \item We develop a summary-based NPE framework for Bayesian dynamic
+  \item We develop a summary-based NPE method for Bayesian dynamic
         borrowing that replaces repeated per-dataset fitting with amortized
         posterior inference on paired current/external data.
   \item We evaluate the method in a controlled simulation study spanning six
@@ -59,7 +59,7 @@ Our main contributions are as follows.
         robustness in the harder mismatch settings, especially when the outcome
         model differs across sources.
   \item We present a real-data ADNI case study showing that the borrowing
-        problem also arises clearly in practice and that the proposed NPE
+        problem also appears in practice and that the proposed NPE
         formulation can recover the concurrent cohort risk level more closely
         than naive borrowing strategies.
 \end{itemize}
@@ -98,5 +98,5 @@ Section~\ref{sec:discussion} concludes with limitations and future directions.
         Controlled simulations make it possible to assess bias and error under
         known exchangeability violations, while a real-world case study checks
         whether the same issues appear in practice and whether the method
-        behaves sensibly on clinically meaningful data.
+        behaves reasonably on clinically meaningful data.
 \end{itemize}
