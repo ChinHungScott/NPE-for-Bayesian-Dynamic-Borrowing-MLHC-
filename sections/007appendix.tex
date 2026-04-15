@@ -1,4 +1,4 @@
-\section{Additional Results}
+﻿\section{Additional Results}
 \label{app:additional-results}
 
 \subsection{Full Simulation Tables}
@@ -163,6 +163,31 @@ SC6 & NPE          & 0.2651 & 0.3115 & 0.94 & 0.06 \\
 \normalsize
 \renewcommand{\arraystretch}{1}
 
+\subsection{Additional Simulation Figures}
+
+Figures~\ref{fig:app-sim-rmse}--\ref{fig:app-sim-null-coverage} provide the remaining simulation operating characteristics. They are consistent with the main-text figures: the largest methodological differences appear through bias and interval calibration under outcome drift or joint mismatch, while power is near one in most non-null settings.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.78\textwidth]{fig_sim_rmse_focus.pdf}
+    \caption{RMSE in the non-null simulation run ($\theta=1$).}
+    \label{fig:app-sim-rmse}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.78\textwidth]{fig_sim_power_focus.pdf}
+    \caption{Power in the non-null simulation run ($\theta=1$).}
+    \label{fig:app-sim-power}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.78\textwidth]{fig_sim_coverage_null_focus.pdf}
+    \caption{Coverage in the null simulation run ($\theta=0$). The dashed line marks nominal 95\% coverage.}
+    \label{fig:app-sim-null-coverage}
+\end{figure}
+
 \subsection{Exploratory NPE Extensions}
 
 We also ran exploratory non-null simulations for several NPE variants that add
@@ -211,3 +236,6 @@ SC6 & JSD-NPE    & -0.1121 & 0.1647 & 1.00 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+
+
