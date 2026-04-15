@@ -1,4 +1,4 @@
-\section{Simulation Study}
+﻿\section{Simulation Study}
 \label{sec:simulation}
 
 \subsection{Design}
@@ -83,36 +83,26 @@ SC6 & NPE          & 0.07 & 0.98 & 0.06 \\
 \end{tabular}
 \end{table}
 
-Figures~\ref{fig:sim-bias}--\ref{fig:sim-power} show the same results.
-To keep the main text simple, we show bias, RMSE, coverage, and power in the
-figures.
+Figures~\ref{fig:sim-bias} and \ref{fig:sim-coverage} show the two main
+non-null operating characteristics. Bias highlights where external borrowing
+moves the point estimate away from the current-study target, while coverage
+shows whether the resulting uncertainty intervals remain calibrated. The
+shaded regions indicate scenarios with outcome drift or joint covariate/outcome
+mismatch; Exch., Cov., Out., and Joint denote exchangeability, covariate shift,
+outcome drift, and joint mismatch, respectively.
 
 \begin{figure}[!htbp]
     \centering
-    \includegraphics[width=.74\textwidth]{fig_bias.pdf}
-    \caption{Bias across the six simulation scenarios for the non-null run.}
+    \includegraphics[width=.95\textwidth]{fig_sim_bias_focus.pdf}
+    \caption{Bias in the non-null simulation run ($\theta=1$). Shaded regions indicate scenarios with outcome drift or joint covariate/outcome mismatch.}
     \label{fig:sim-bias}
 \end{figure}
 
 \begin{figure}[!htbp]
     \centering
-    \includegraphics[width=.74\textwidth]{fig_rmse.pdf}
-    \caption{RMSE across the six simulation scenarios for the non-null run.}
-    \label{fig:sim-rmse}
-\end{figure}
-
-\begin{figure}[!htbp]
-    \centering
-    \includegraphics[width=.74\textwidth]{fig_coverage.pdf}
-    \caption{Coverage across the six simulation scenarios for the non-null run.}
+    \includegraphics[width=.95\textwidth]{fig_sim_coverage_focus.pdf}
+    \caption{Coverage in the non-null simulation run ($\theta=1$). The dashed line marks nominal 95\% coverage.}
     \label{fig:sim-coverage}
-\end{figure}
-
-\begin{figure}[!htbp]
-    \centering
-    \includegraphics[width=.74\textwidth]{fig_power.pdf}
-    \caption{Power across the six simulation scenarios for the non-null run.}
-    \label{fig:sim-power}
 \end{figure}
 
 \subsection{Null results}
@@ -127,21 +117,16 @@ and severely inflated Type I error, while NPE stays much closer to nominal
 behavior.
 
 The full null table is reported in Appendix~\ref{app:additional-results}.
+Figure~\ref{fig:sim-type1} focuses on Type I error, the most direct null-run
+measure of whether a borrowing method produces false positive findings under
+source mismatch.
 
 \begin{figure}[!htbp]
     \centering
-    \includegraphics[width=.74\textwidth]{fig_coverage_null.pdf}
-    \caption{Coverage across the six simulation scenarios for the null run.}
-    \label{fig:sim-coverage-null}
-\end{figure}
-
-\begin{figure}[!htbp]
-    \centering
-    \includegraphics[width=.74\textwidth]{fig_type1_error.pdf}
-    \caption{Type I error across the six simulation scenarios for the null run.}
+    \includegraphics[width=.95\textwidth]{fig_sim_type1_focus.pdf}
+    \caption{Type I error in the null simulation run ($\theta=0$). The dashed line marks the nominal 0.05 level, and shaded regions indicate scenarios with outcome drift or joint covariate/outcome mismatch.}
     \label{fig:sim-type1}
 \end{figure}
-
 \FloatBarrier
 
 \subsection{Computational timing}
@@ -212,3 +197,6 @@ NPE is much more stable there.
 Taken together, these results suggest that NPE is most useful when source
 mismatch is difficult to capture with a fixed borrowing rule, especially when the
 main problem is outcome drift rather than mild covariate shift.
+
+
+

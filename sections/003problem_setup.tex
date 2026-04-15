@@ -1,4 +1,4 @@
-\section{Background and Problem Setup}
+﻿\section{Background and Problem Setup}
 \label{sec:problem}
 
 \subsection{Dynamic borrowing setup}
@@ -89,60 +89,4 @@ and posterior inference for a new current/external pair requires only a single
 forward pass through the network.
 This makes the approach attractive in settings where many candidate external
 sources might be screened repeatedly.
-
-\subsection{ADNI real-world borrowing setup}
-
-ADNI is a longitudinal observational study spanning multiple phases with
-differences in enrollment, timing, and clinical practice
-\citep{petersen2010alzheimer,weiner2017alzheimer}.
-These phase differences make ADNI a natural case study for borrowing under
-cohort shift.
-
-For the real-data application, we define:
-\begin{itemize}[leftmargin=1.5em]
-    \item \textbf{External cohort:} ADNI1
-    \item \textbf{Concurrent cohort:} ADNIGO + ADNI2
-    \item \textbf{Population:} baseline MCI subjects only
-    \item \textbf{Outcome:} conversion to dementia by approximately 24 months
-\end{itemize}
-
-Each subject is represented by the baseline covariate vector
-\[
-X =
-(\text{age}, \text{female}, \text{education}, \text{APOE4 count},
-\text{MMSE}_{bl}, \text{ADAS13}_{bl}, \text{CDRSB}_{bl}, \text{FAQ}_{bl}).
-\]
-This yields a simple and clinically interpretable tabular representation for
-the first real-data analysis.
-
-The real-data application is not formulated as a randomized treatment-effect
-problem.
-Instead, it is treated as a borrowing-under-shift example in which we want to
-learn about the concurrent cohort's risk level while allowing the external
-cohort to differ.
-To that end, we use the real ADNI covariates $(X_c, X_e)$ as fixed design
-points and simulate outcomes from
-\begin{align}
-Y_c &\sim \text{Bernoulli}\!\left(\sigma(X_c \beta + \theta)\right), \\
-Y_e &\sim \text{Bernoulli}\!\left(\sigma(X_e \beta + \theta + \delta)\right),
-\end{align}
-where $\theta$ is the concurrent risk-level parameter of interest and
-$\delta$ is a nuisance parameter capturing external outcome shift.
-This preserves the simulation-based inference logic of NPE while grounding the
-covariate distribution in the observed ADNI data.
-
-\subsection{Why the ADNI case study is informative}
-
-The ADNI application is useful for two reasons.
-First, it provides a clinically meaningful example in which the external and
-concurrent cohorts are related but not directly exchangeable.
-Second, it lets us examine the practical manifestation of borrowing bias:
-whether models trained on external data systematically overestimate risk in the
-concurrent cohort even when ranking performance remains strong.
-
-In this sense, the ADNI case study complements rather than replaces the
-simulation study.
-The simulations provide controlled evaluation under known exchangeability
-regimes, while ADNI shows how a borrowing problem with real cohort shift looks
-in practice.
 
