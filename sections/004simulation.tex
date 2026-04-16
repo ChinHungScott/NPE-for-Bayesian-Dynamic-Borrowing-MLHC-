@@ -56,28 +56,28 @@ reported in Appendix~\ref{app:additional-results}.
 \begin{center}
 \scriptsize
 \renewcommand{\arraystretch}{0.92}
-\captionof{table}{Representative hard-setting summary ($N_c=100$), with
-Monte Carlo standard errors (MCSEs).}
+\captionof{table}{Representative hard-setting summary ($N_c=100$). Bias
+intervals are 95\% Monte Carlo confidence intervals.}
 \label{tab:sim-hard-summary}
-\setlength{\tabcolsep}{1.8pt}
-\begin{tabular}{@{}llcccccc@{}}
+\setlength{\tabcolsep}{2.3pt}
+\begin{tabular}{@{}llcccc@{}}
 \toprule
-Scenario & Method & Bias & Bias MCSE & Coverage & Cov. MCSE & Type I & Type I MCSE \\
+Scenario & Method & Bias & 95\% MC CI & Coverage & Type I Error \\
 \midrule
-SC3 & PSPower      & 0.96 & 0.02 & 0.00 & 0.00 & 1.00 & 0.00 \\
-SC3 & IW           & 0.66 & 0.02 & 0.00 & 0.00 & 1.00 & 0.00 \\
-SC3 & Commensurate & 0.86 & 0.02 & 0.00 & 0.00 & 1.00 & 0.00 \\
-SC3 & NPE          & 0.15 & 0.02 & 1.00 & 0.00 & 0.02 & 0.02 \\
-\cmidrule(lr){1-8}
-SC5 & PSPower      & 0.95 & 0.01 & 0.00 & 0.00 & 1.00 & 0.00 \\
-SC5 & IW           & 0.66 & 0.02 & 0.00 & 0.00 & 1.00 & 0.00 \\
-SC5 & Commensurate & 0.86 & 0.02 & 0.00 & 0.00 & 1.00 & 0.00 \\
-SC5 & NPE          & 0.13 & 0.02 & 1.00 & 0.00 & 0.04 & 0.03 \\
-\cmidrule(lr){1-8}
-SC6 & PSPower      & 0.32 & 0.02 & 0.32 & 0.07 & 0.68 & 0.07 \\
-SC6 & IW           & 0.07 & 0.02 & 0.92 & 0.04 & 0.08 & 0.04 \\
-SC6 & Commensurate & 0.21 & 0.02 & 0.54 & 0.07 & 0.46 & 0.07 \\
-SC6 & NPE          & 0.07 & 0.02 & 0.98 & 0.02 & 0.06 & 0.03 \\
+SC3 & PSPower      & 0.96 & [0.93, 0.99] & 0.00 & 1.00 \\
+SC3 & IW           & 0.66 & [0.63, 0.69] & 0.00 & 1.00 \\
+SC3 & Commensurate & 0.86 & [0.82, 0.90] & 0.00 & 1.00 \\
+SC3 & NPE          & 0.15 & [0.11, 0.19] & 1.00 & 0.02 \\
+\cmidrule(lr){1-6}
+SC5 & PSPower      & 0.95 & [0.93, 0.98] & 0.00 & 1.00 \\
+SC5 & IW           & 0.66 & [0.62, 0.69] & 0.00 & 1.00 \\
+SC5 & Commensurate & 0.86 & [0.81, 0.90] & 0.00 & 1.00 \\
+SC5 & NPE          & 0.13 & [0.09, 0.17] & 1.00 & 0.04 \\
+\cmidrule(lr){1-6}
+SC6 & PSPower      & 0.32 & [0.28, 0.37] & 0.32 & 0.68 \\
+SC6 & IW           & 0.07 & [0.03, 0.12] & 0.92 & 0.08 \\
+SC6 & Commensurate & 0.21 & [0.16, 0.25] & 0.54 & 0.46 \\
+SC6 & NPE          & 0.07 & [0.02, 0.11] & 0.98 & 0.06 \\
 \bottomrule
 \end{tabular}
 \renewcommand{\arraystretch}{1}
@@ -89,6 +89,9 @@ method moves the point estimate away from the current-study target, while
 coverage shows whether the resulting uncertainty intervals remain calibrated.
 Error bars show Monte Carlo standard errors across the 50 simulation
 replicates in each cell.
+In SC3 and SC5, the gaps between NPE and the classical borrowing methods are
+much larger than the Monte Carlo error bars, whereas in SC6 the NPE and IW
+results are similar.
 
 \begin{center}
 \includegraphics[width=.86\textwidth]{fig_sim_abs_bias_bar.pdf}
@@ -112,11 +115,16 @@ The harder settings tell a different story.
 In SC3, SC5, and SC6, the classical borrowing methods have very poor coverage
 and severely inflated Type I error, while NPE stays much closer to nominal
 behavior.
+This is especially important in the null setting because the target Type I
+error is not zero, but the nominal 0.05 level.
 
 The full null table is reported in Appendix~\ref{app:additional-results}.
 Figure~\ref{fig:sim-type1} focuses on Type I error, the most direct null-run
 measure of whether a borrowing method produces false positive findings under
 source mismatch.
+The Type I error plot shows the same pattern as the coverage results: NPE is
+near the nominal level in the harder settings, while the classical borrowing
+methods are strongly anti-conservative when outcome drift is present.
 
 \begin{center}
 \includegraphics[width=.86\textwidth]{fig_sim_type1_bar.pdf}
