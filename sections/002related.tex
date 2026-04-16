@@ -6,6 +6,9 @@
 Dynamic borrowing methods combine information from a small current study
 $D_c$ with data from an external source $D_e$ in order to improve inference on
 a current-study parameter $\theta$.
+These designs are increasingly used in clinical development settings where
+existing trial data may help supplement a new study
+\citep{edwards2024using}.
 When the two sources are sufficiently similar, borrowing can reduce variance
 and improve precision.
 When they differ in clinically meaningful ways, however, borrowing can induce
@@ -59,7 +62,8 @@ reweighting rather than hierarchical priors.
 Propensity-score methods reweight external subjects so that their covariate
 distribution better matches the current cohort \citep{stuart2010matching}.
 Inverse-probability weighting is a standard implementation, although it can be
-unstable when estimated propensity scores are close to 0 or 1.
+unstable when estimated propensity scores are close to 0 or 1
+\citep{chesnaye2022introduction}.
 Overlap weighting \citep{li2018balancing} addresses this issue by emphasizing
 subjects in the region of covariate overlap, with weights proportional to
 $2\hat e(x)(1-\hat e(x))$.
@@ -67,18 +71,21 @@ $2\hat e(x)(1-\hat e(x))$.
 A key limitation of weighting-based approaches is that they primarily address
 differences in baseline covariates, but not differences in the outcome
 generation mechanism \citep{viele2014use, dahabreh2019generalizing}.
-In longitudinal Alzheimer's disease studies, cohorts may differ not only in
-patient characteristics, but also in diagnostic practice, follow-up intensity,
-medication availability, biomarker measurement, and outcome ascertainment.
-Such differences are difficult to capture with a single balancing score or a
-small number of discrepancy parameters.
+In Alzheimer's disease cohorts, an external source and a current source can
+also differ in recruitment period, diagnostic practice, assessment schedule, or
+baseline conversion risk.
+In that case, balancing baseline covariates may not be enough: even if a model
+ranks patients reasonably well, the risk level or outcome relationship learned
+from the external cohort may be shifted relative to the current cohort.
+This is the kind of mismatch examined in our ADNI case study.
 
 Taken together, existing Bayesian borrowing methods and weighting approaches
 often summarize source agreement through one or a few low-dimensional
 quantities.
-That strategy can be effective in simple settings, but falls short in longitudinal clinical data, where differences between cohorts are high-dimensional and change over time.
-This motivates the search for richer representations of cross-cohort
-similarity in complex disease settings such as Alzheimer's disease.
+That strategy can be effective in simple settings, but it can miss clinically
+important source differences that appear as calibration or outcome drift.
+This motivates borrowing methods that can use richer summaries of cross-cohort
+similarity while still targeting the current-study parameter.
 
 \subsection{Neural posterior estimation and simulation-based inference}
 
