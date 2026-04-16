@@ -83,22 +83,21 @@ SC6 & NPE          & 0.07 & 0.98 & 0.06 \\
 \end{center}
 
 Figures~\ref{fig:sim-bias} and \ref{fig:sim-coverage} show the two main
-non-null operating characteristics. Bias highlights where external borrowing
-moves the point estimate away from the current-study target, while coverage
-shows whether the resulting uncertainty intervals remain calibrated. The
-shaded regions indicate scenarios with outcome drift or joint covariate/outcome
-mismatch; Exch., Cov., Out., and Joint denote exchangeability, covariate shift,
-outcome drift, and joint mismatch, respectively.
+non-null operating characteristics. Absolute bias highlights how far each
+method moves the point estimate away from the current-study target, while
+coverage shows whether the resulting uncertainty intervals remain calibrated.
+Error bars show Monte Carlo standard errors across the 50 simulation
+replicates in each cell.
 
 \begin{center}
-\includegraphics[width=.70\textwidth]{fig_sim_bias_focus.pdf}
-\captionof{figure}{Bias in the non-null run ($\theta=1$). Shaded regions indicate outcome drift or joint mismatch.}
+\includegraphics[width=.86\textwidth]{fig_sim_abs_bias_bar.pdf}
+\captionof{figure}{Absolute bias in the non-null run ($\theta=1$). Error bars show Monte Carlo standard errors across 50 simulation replicates.}
 \label{fig:sim-bias}
 \end{center}
 
 \begin{center}
-\includegraphics[width=.70\textwidth]{fig_sim_coverage_focus.pdf}
-\captionof{figure}{Coverage in the non-null run ($\theta=1$). The dashed line marks nominal 95\% coverage.}
+\includegraphics[width=.86\textwidth]{fig_sim_coverage_bar.pdf}
+\captionof{figure}{Coverage in the non-null run ($\theta=1$). The dashed line marks nominal 95\% coverage; error bars show Monte Carlo standard errors.}
 \label{fig:sim-coverage}
 \end{center}
 
@@ -119,8 +118,8 @@ measure of whether a borrowing method produces false positive findings under
 source mismatch.
 
 \begin{center}
-\includegraphics[width=.70\textwidth]{fig_sim_type1_focus.pdf}
-\captionof{figure}{Type I error in the null run ($\theta=0$). The dashed line marks the nominal 0.05 level; shaded regions indicate outcome drift or joint mismatch.}
+\includegraphics[width=.86\textwidth]{fig_sim_type1_bar.pdf}
+\captionof{figure}{Type I error in the null run ($\theta=0$). The dashed line marks the nominal 0.05 level; error bars show Monte Carlo standard errors.}
 \label{fig:sim-type1}
 \end{center}
 \subsection{Computational timing}
