@@ -64,6 +64,17 @@ Our main contributions are as follows.
         than naive borrowing strategies.
 \end{itemize}
 
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=.95\textwidth]{fig_method_overview.pdf}
+    \caption{Overview of the proposed NPE workflow. Simulation scenarios define
+    different types of source mismatch and are used to generate current/external
+    dataset pairs for pretraining. At inference time, the same summaries are
+    computed for a new dataset pair and passed through the pretrained NPE to
+    obtain an approximate posterior for the current-study target parameter.}
+    \label{fig:method-overview}
+\end{figure}
+
 The remainder of the paper is organized as follows.
 Section~\ref{sec:related} reviews dynamic borrowing, balancing methods, and
 simulation-based inference.
