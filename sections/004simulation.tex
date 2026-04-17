@@ -161,12 +161,12 @@ regression/reweighting procedures.
 The commensurate-prior implementation is MCMC-based, using burn-in and
 posterior draws, and is therefore the most relevant computational baseline for
 repeated Bayesian posterior inference.
-Against this baseline, NPE is about 90 times faster after training, while still
-returning a full approximate posterior.
+Against this baseline, NPE is about 90 times faster after pretraining, while
+still returning a full approximate posterior.
 
 Figure~\ref{fig:runtime-cumulative} shows cumulative runtime when the one-time
-NPE training cost is included.
-The NPE training run took 46.8 seconds; relative to the commensurate model,
+NPE pretraining cost is included.
+The NPE pretraining run took 46.8 seconds; relative to the commensurate model,
 this cost is recovered after approximately 45 repeated analyses.
 Thus, the computational advantage of NPE is not that it is the cheapest method
 for a single simple fit, but that posterior inference is amortized once many
