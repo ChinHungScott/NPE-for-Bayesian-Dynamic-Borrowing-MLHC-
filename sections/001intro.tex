@@ -27,7 +27,7 @@ That can be restrictive when the two sources differ in more than one way.
 
 Amortized neural posterior estimation (NPE) offers a different route.
 Instead of rerunning MCMC or numerical optimization for every new
-current/external pair, the idea is to train a neural network offline on many
+current/external pair, the idea is to pretrain a neural network on many
 simulated borrowing problems and then use the trained network to output an
 approximate posterior in a single forward pass
 \citep{papamakarios2019sequential,greenberg2019automatic,cranmer2020frontier,
@@ -93,7 +93,7 @@ Section~\ref{sec:discussion} concludes with limitations and future directions.
 \begin{itemize}[leftmargin=1.5em, itemsep=2pt]
   \item \textbf{Amortized inference can make adaptive borrowing practical in
         healthcare studies with repeated external comparisons.}
-        Training an NPE model offline allows approximate posterior inference
+        Pretraining an NPE model allows approximate posterior inference
         for new cohort pairs without rerunning expensive Bayesian computation
         from scratch each time.
 

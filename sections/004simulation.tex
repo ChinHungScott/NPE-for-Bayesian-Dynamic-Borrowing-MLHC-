@@ -141,14 +141,14 @@ methods are strongly anti-conservative when outcome drift is present.
 \end{center}
 \subsection{Computational timing}
 
-We also evaluated the online cost of applying each method after the dataset
+We also evaluated the inference cost of applying each method after the dataset
 pair has been generated.
 
 \begin{center}
 \small
-\captionof{table}{Online runtime comparison over 600 simulated analyses. NPE time excludes
-the one-time offline training cost.}
-\label{tab:runtime-online}
+\captionof{table}{Runtime comparison over 600 simulated analyses. NPE time
+excludes the one-time pretraining cost.}
+\label{tab:runtime-inference}
 \begin{tabular}{@{}lcccc@{}}
 \toprule
 Method & Runs & Mean ms & Median ms & Speedup \\
@@ -161,10 +161,10 @@ Commensurate & 600 & 1074 & 1069 & 1.0$\times$ \\
 \end{tabular}
 \end{center}
 
-We also measured wall-clock online inference time over 600 simulated analyses
+We also measured wall-clock inference time over 600 simulated analyses
 in Google Colab using a T4 GPU.
-Table~\ref{tab:runtime-online} reports online runtime, excluding the one-time
-offline NPE training cost, and therefore measures only the time needed to
+Table~\ref{tab:runtime-inference} reports runtime excluding the one-time
+NPE pretraining cost, and therefore measures only the time needed to
 analyze a new current--external dataset pair.
 IW and PSPower are fastest in this implementation because they are lightweight
 regression/reweighting procedures.
@@ -186,7 +186,7 @@ dataset pairs must be analyzed.
     \centering
     \includegraphics[width=.74\textwidth]{runtime_cumulative.pdf}
     \caption{Cumulative runtime across repeated simulated analyses. The NPE
-    curve includes the one-time offline training cost plus online inference for
+    curve includes the one-time pretraining cost plus inference for
     each new dataset pair.}
     \label{fig:runtime-cumulative}
 \end{figure}

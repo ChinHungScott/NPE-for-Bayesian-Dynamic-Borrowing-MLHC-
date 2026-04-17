@@ -66,7 +66,7 @@ computationally expensive when posterior computation is repeated for each new
 dataset pair.
 We study amortized neural posterior estimation (NPE) as a flexible alternative
 for dynamic borrowing under cohort shift.
-The method is trained offline on simulated current/external dataset pairs and
+The method is pretrained on simulated current/external dataset pairs and
 then produces an approximate posterior for the current-study estimand with a
 single forward pass.
 We evaluate the approach in a controlled simulation study spanning six
@@ -85,7 +85,7 @@ is adapted to infer a concurrent cohort risk-level parameter while allowing
 external outcome drift.
 Together, the simulation study and ADNI case study show how amortized
 posterior estimation can support adaptive borrowing under realistic source
-mismatch while retaining fast reusable inference after offline training.
+mismatch while retaining fast reusable inference after pretraining.
 \end{abstract}
 
 \input{sections/001intro}

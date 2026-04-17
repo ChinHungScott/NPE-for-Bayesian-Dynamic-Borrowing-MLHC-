@@ -95,16 +95,15 @@ s(D_c, D_e)
 where the exact contents are determined by the method implementation.
 In the current baseline NPE model, the summary includes source-level means and
 standard deviations, outcome summaries, simple regression-based coefficients,
-and overlap-inspired diagnostics derived from source-membership propensity
-scores.
-Specifically, the overlap diagnostics are based on a propensity model
+and source-overlap summaries derived from propensity scores.
+Specifically, these summaries are based on a propensity model
 $e(x)=P(S=1\mid X=x)$, where $S=1$ denotes membership in the concurrent
 source. External observations receive overlap weights
 \[
 w_j = 2\sqrt{e(X_{ej})\{1-e(X_{ej})\}},
 \]
 which are used to compute weighted external summaries and effective-sample-size
-diagnostics.
+summaries.
 
 Given simulated pairs $(\theta, D_c, D_e)$, a neural network is trained to
 approximate the posterior distribution over $\theta$.
@@ -125,9 +124,9 @@ $\{(\theta^{(m)},D_c^{(m)},D_e^{(m)})\}_{m=1}^M$, the training objective is
 \theta^{(m)}\mid s(D_c^{(m)},D_e^{(m)})
 \right)\right\}.
 \]
-The advantage of this setup is computational: training is done once offline,
-and posterior inference for a new current/external pair requires only a single
-forward pass through the network.
+The advantage of this setup is computational: the model is pretrained once, and
+posterior inference for a new current/external pair requires only a single
+forward pass through the pretrained network.
 This makes the approach attractive in settings where many candidate external
 sources might be screened repeatedly.
 
