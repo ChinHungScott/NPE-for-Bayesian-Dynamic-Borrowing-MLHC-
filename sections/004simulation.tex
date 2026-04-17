@@ -25,6 +25,10 @@ The main text comparison includes four methods:
     \item \textbf{NPE}, the proposed neural posterior estimation method.
 \end{itemize}
 
+We expect PSPower and Commensurate to work best when the two sources are close
+to exchangeable, IW to help mainly with covariate shift, and NPE to be most
+useful when source mismatch also involves outcome drift or joint mismatch.
+
 \subsection{Evaluation metrics}
 
 We use two simulation settings.
@@ -37,6 +41,9 @@ Power is the fraction of 95\% intervals that exclude 0.
 In the null setting, we set $\theta=0$ and report coverage and Type I error.
 Type I error is the fraction of 95\% intervals that exclude 0 when the true
 effect is zero.
+The main text focuses on bias, coverage, and Type I error because these most
+directly show the borrowing failure modes under source mismatch; RMSE and power
+are included in the full simulation tables in Appendix~\ref{app:additional-results}.
 
 \subsection{Main results for the non-null setting}
 
@@ -57,7 +64,8 @@ reported in Appendix~\ref{app:additional-results}.
 \scriptsize
 \renewcommand{\arraystretch}{0.92}
 \captionof{table}{Representative hard-setting summary ($N_c=100$), with
-Monte Carlo standard errors (MCSEs).}
+Monte Carlo standard errors (MCSEs). Bias and coverage are from the non-null
+run with $\theta=1$; Type I error is from the null run with $\theta=0$.}
 \label{tab:sim-hard-summary}
 \setlength{\tabcolsep}{1.8pt}
 \begin{tabular}{@{}llcccccc@{}}
