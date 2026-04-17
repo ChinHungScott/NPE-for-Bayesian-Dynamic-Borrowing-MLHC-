@@ -39,8 +39,7 @@ the (robust) meta-analytic-predictive prior
 down-weight external data adaptively when prior--data conflict is detected
 \citep{evans2006checking,presanis2013conflict}.
 
-Despite their principled foundations, classical BDB methods share several
-practical limitations that are particularly acute in healthcare applications.
+Despite their principled foundations and interpretation, existing BDB methods face several limitations for clinical trial data borrowing from real-world data (RWD). 
 First, they summarize cross-source compatibility through one or a few
 low-dimensional quantities---a scalar discount $a_0$, a commensurability
 precision $\tau$, or a mixture weight $\epsilon$---and therefore cannot
@@ -63,8 +62,7 @@ do not correct shifts in the outcome mechanism itself
 observe between ADNI1 and ADNIGO/ADNI2.
 
 Amortized neural posterior estimation (NPE) offers a different route that
-directly targets the computational and representational limits of classical
-BDB.
+directly targets the computational and representational limits of classical BDB.
 In NPE, a neural density estimator is pretrained on simulated
 parameter--data pairs so that, at inference time, it returns an approximate
 posterior in a single forward pass
