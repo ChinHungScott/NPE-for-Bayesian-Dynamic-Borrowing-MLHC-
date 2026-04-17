@@ -59,6 +59,8 @@ substantially more stable than PSPower and Commensurate, and is close to IW.
 Table~\ref{tab:sim-hard-summary} gives a compact summary of the harder
 settings for $N_c=100$. The full non-null and null simulation tables are
 reported in Appendix~\ref{app:additional-results}.
+The MCSE columns help distinguish the large method differences in these
+settings from simulation noise.
 
 \begin{center}
 \scriptsize
@@ -92,10 +94,11 @@ SC6 & NPE          & 0.07 & 0.02 & 0.98 & 0.02 & 0.06 & 0.03 \\
 \end{center}
 
 Figure~\ref{fig:sim-nonnull-error} summarizes non-null estimation error across
-the six scenarios. Absolute bias and RMSE both show how far each method moves
-away from the current-study target. In SC3 and SC5, the classical borrowing
-methods move much farther from the center of the plot than NPE; in SC6, NPE
-and IW are similar.
+the six scenarios. Absolute bias shows how far the point estimate moves from
+the current-study target, while RMSE combines bias and variability across
+simulation replicates. In SC3 and SC5, the classical borrowing methods move
+much farther from the center of the plot than NPE; in SC6, NPE and IW are
+similar.
 
 \begin{center}
 \includegraphics[width=.95\textwidth]{fig_hex_nonnull_error_metrics.pdf}
@@ -126,7 +129,8 @@ is present.
 \begin{center}
 \includegraphics[width=.95\textwidth]{fig_hex_null_operating_metrics.pdf}
 \captionof{figure}{Null operating characteristics by scenario. Dashed polygons
-mark nominal 95\% coverage and 0.05 Type I error when applicable.}
+indicate the nominal benchmark for each metric: 0.95 for coverage and 0.05 for
+Type I error.}
 \label{fig:sim-null-operating}
 \end{center}
 \subsection{Computational timing}

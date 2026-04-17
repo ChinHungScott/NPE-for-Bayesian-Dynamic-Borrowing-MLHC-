@@ -105,6 +105,9 @@ $\delta$ represents the shift between the external and concurrent outcome
 levels, and $\beta$ denotes the covariate effects. The role of $\delta$ is
 important here because it allows the external cohort to differ rather than
 forcing full exchangeability.
+In this ADNI formulation, $\theta$ is the reported target; $\delta$ is used to
+generate source mismatch during pretraining and is not reported as a target
+estimand.
 
 To generate training data for NPE, we first fit a logistic model to the
 observed ADNI data and use the fitted coefficient vector as an anchor
@@ -197,8 +200,8 @@ evidence of greater precision.
 Overall, the ADNI analysis supports the same broad message as the simulation
 study. The earlier and later cohorts are not directly comparable, and direct
 borrowing tends to push the estimated risk upward. The ADNI-specific NPE
-formulation is centered close to the concurrent target, while remaining
-conservative about uncertainty. We do not view this as a
+formulation is centered close to the concurrent target, with a wider posterior
+interval than the commensurate comparator. We do not view this as a
 replacement for the simulation study, but rather as a concrete example showing
 that the borrowing problem is not only a theoretical concern.
 
