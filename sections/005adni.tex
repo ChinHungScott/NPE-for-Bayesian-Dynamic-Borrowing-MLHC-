@@ -188,35 +188,9 @@ NPE & $\theta_c$ & $-1.599$ & 0.859 & $(-3.301,\ 0.108)$ \\
 
 Thus, NPE and the commensurate model give nearly identical posterior centers for
 the concurrent risk level in this ADNI example, although the NPE interval is
-wider. In light of the timing results in Section~\ref{sec:simulation}, the
-advantage of NPE here is not greater precision but comparable centering with
-fast amortized inference.
-
-The main ADNI analysis uses one trained model with $\delta_{\mathrm{sd}}=0.75$.
-As a sensitivity analysis, we varied the training scale for the external-source
-shift parameter from 0.50 to 1.25 and repeated each setting over five training
-seeds, reporting the mean and standard deviation across runs. The posterior mean
-of $\theta$ remained stable, ranging from $-1.57$ to $-1.59$, and the
-posterior standard deviation remained close to 0.86. The 95\% interval width
-also changed only modestly, from 3.40 to 3.36
-(Table~\ref{tab:adni-delta-sensitivity}).
-
-\begin{table}[H]
-\centering
-\small
-\caption{ADNI sensitivity analysis over the external-shift training scale. Values in parentheses denote standard deviations across five training seeds.}
-\label{tab:adni-delta-sensitivity}
-\begin{tabular}{lcccc}
-\toprule
-$\delta$ SD & Posterior mean & Posterior SD & 95\% interval & Interval width \\
-\midrule
-0.50 & $-1.573$ (0.068) & 0.864 & $(-3.281,\ 0.122)$ & 3.403 (0.085) \\
-0.75 & $-1.583$ (0.048) & 0.862 & $(-3.287,\ 0.107)$ & 3.394 (0.093) \\
-1.00 & $-1.587$ (0.072) & 0.856 & $(-3.279,\ 0.092)$ & 3.371 (0.096) \\
-1.25 & $-1.592$ (0.092) & 0.854 & $(-3.279,\ 0.082)$ & 3.360 (0.097) \\
-\bottomrule
-\end{tabular}
-\end{table}
+wider. We therefore interpret the ADNI result as evidence that the NPE
+formulation can recover the later-cohort risk level in this example, not as
+evidence of greater precision.
 
 \FloatBarrier
 
