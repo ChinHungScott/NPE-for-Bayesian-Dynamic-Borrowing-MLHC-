@@ -3,13 +3,9 @@
 
 \subsection{Dynamic borrowing setup}
 
-Let
-\[
-D_c = \{(x_{ci}, y_{ci})\}_{i=1}^{n_c}
-\quad \text{and} \quad
-D_e = \{(x_{ej}, y_{ej})\}_{j=1}^{n_e}
-\]
-denote the concurrent and external datasets, respectively.
+Let $D_c = \{(x_{ci}, y_{ci})\}_{i=1}^{n_c}$ and
+$D_e = \{(x_{ej}, y_{ej})\}_{j=1}^{n_e}$ denote the concurrent and external
+datasets, respectively.
 The inferential goal is always defined with respect to the concurrent
 population.
 External data can be useful when it is sufficiently compatible with the
@@ -65,6 +61,26 @@ covariate-driven from settings in which it is mainly outcome-driven.
 They provide a common evaluation grid for both classical borrowing methods and
 the amortized NPE estimator.
 
+In the simulation study, these regimes are implemented through a simple
+Gaussian data-generating model. For subject-level covariates,
+\[
+X_{ci} \sim \mathcal{N}(\mu_c\mathbf{1}_p,\Sigma),
+\qquad
+X_{ej} \sim \mathcal{N}(\mu_e\mathbf{1}_p,\Sigma),
+\]
+where $\mu_e=\mu_c$ in covariate-exchangeable settings and $\mu_e$ is shifted
+away from $\mu_c$ under covariate shift. Outcomes are generated as
+\[
+Y_{ci}=X_{ci}^{\top}\beta+\theta+\epsilon_{ci},
+\qquad
+Y_{ej}=X_{ej}^{\top}\beta+\theta+\delta_e+\epsilon_{ej},
+\qquad
+\epsilon_{si}\sim\mathcal{N}(0,\sigma^2).
+\]
+Thus $\delta_e=0$ corresponds to an exchangeable outcome mechanism, while
+$\delta_e\ne 0$ introduces outcome drift in the external source. The simulation
+sets $\theta=1$ for the non-null run and $\theta=0$ for the null run.
+
 \subsection{Summary-based neural posterior estimation}
 
 The NPE model operates on a fixed-length summary vector
@@ -81,9 +97,34 @@ In the current baseline NPE model, the summary includes source-level means and
 standard deviations, outcome summaries, simple regression-based coefficients,
 and overlap-inspired diagnostics derived from source-membership propensity
 scores.
+Specifically, the overlap diagnostics are based on a propensity model
+$e(x)=P(S=1\mid X=x)$, where $S=1$ denotes membership in the concurrent
+source. External observations receive overlap weights
+\[
+w_j = 2\sqrt{e(X_{ej})\{1-e(X_{ej})\}},
+\]
+which are used to compute weighted external summaries and effective-sample-size
+diagnostics.
 
 Given simulated pairs $(\theta, D_c, D_e)$, a neural network is trained to
 approximate the posterior distribution over $\theta$.
+We use a Gaussian posterior family,
+\[
+q_{\phi}(\theta\mid s)=
+\mathcal{N}\!\left(m_{\phi}(s), \sigma_{\phi}^{2}(s)\right),
+\]
+where the network outputs $m_{\phi}(s)$ and $\log \sigma_{\phi}(s)$.
+For simulated training pairs
+$\{(\theta^{(m)},D_c^{(m)},D_e^{(m)})\}_{m=1}^M$, the training objective is
+\[
+\widehat{\phi}
+=
+\arg\min_{\phi}
+\frac{1}{M}\sum_{m=1}^M
+\left\{-\log q_{\phi}\!\left(
+\theta^{(m)}\mid s(D_c^{(m)},D_e^{(m)})
+\right)\right\}.
+\]
 The advantage of this setup is computational: training is done once offline,
 and posterior inference for a new current/external pair requires only a single
 forward pass through the network.
