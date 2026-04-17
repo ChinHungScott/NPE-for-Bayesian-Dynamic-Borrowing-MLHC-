@@ -1,67 +1,125 @@
 \section{Introduction}
-External or historical cohorts are increasingly used to augment small
-concurrent studies in medicine.
-When the external and concurrent sources are sufficiently similar, borrowing
-can improve efficiency and stabilize estimation.
-When the sources differ in important ways, however, naive borrowing can
-introduce bias and distort uncertainty quantification
-\citep{viele2014use}.
-This tension is especially important in Alzheimer's disease research, where
-prospective follow-up is expensive, clinically meaningful outcomes accrue
-slowly, and related cohorts often differ in enrollment criteria, disease
-severity, and assessment practice.
-In practice, methods that can borrow safely from related cohorts may help make
-small studies more informative without treating historical data as fully
+Small or slow-accruing clinical studies are a persistent bottleneck in
+healthcare research.
+Rare diseases, pediatric indications, and long-horizon neurodegenerative
+cohorts all face the same structural problem: the concurrent study is
+statistically underpowered on its own, yet substantial data from related
+historical or external sources already exist.
+Integrating external evidence with a concurrent study---through historical
+control borrowing, synthetic control arms, or externally controlled
+trials---has therefore become a central methodological and regulatory
+question, with recent guidance from the U.S.\ FDA explicitly addressing the
+design and conduct of externally controlled trials
+\citep{fda2023external,thorlund2020synthetic,edwards2024using}.
+In Alzheimer's disease (AD) research in particular, longitudinal follow-up is
+expensive, clinically meaningful outcomes accrue slowly, and successive
+cohorts often differ in enrollment criteria, disease severity, and assessment
+practice \citep{petersen2010alzheimer,weiner2017alzheimer}.
+Methods that borrow safely from related cohorts can make such studies more
+informative, provided they avoid treating historical data as fully
 exchangeable by default.
 
-Bayesian dynamic borrowing (BDB) provides a Bayesian framework for
-adaptively controlling how much external information should influence
-current-study inference
-\citep{ibrahim2000power,hobbs2011commensurate,neuenschwander2010summarizing,
-schmidli2014robust}.
-Classical BDB methods such as the power prior, commensurate prior, and robust
-MAP prior have strong statistical motivation, but in practice they still
-require repeated model fitting for each new dataset pair and often summarize
-cross-source compatibility through one or a few low-dimensional quantities.
-That can be restrictive when the two sources differ in more than one way.
+The key statistical object underlying these borrowing methods is
+\emph{exchangeability}: the assumption that subject-level outcomes from the
+external and concurrent sources are drawn from a common distribution, up to
+covariates and random variation \citep{pocock1976combination}.
+When exchangeability holds, pooling reduces variance and shrinks effective
+sample-size requirements.
+When it fails---because of secular trends, different diagnostic criteria,
+population drift, or changes in the data-generating outcome model---naive
+pooling induces bias and can inflate the type~I error rate of downstream
+analyses \citep{viele2014use,koppschneider2020power}.
+Bayesian dynamic borrowing (BDB) was developed to navigate this tension.
+Methods such as the power prior \citep{ibrahim2000power,ibrahim2015power},
+normalized and adaptive power priors
+\citep{duan2006evaluating,ye2022normalized,gravestock2017adaptive}, the
+commensurate prior \citep{hobbs2011commensurate,hobbs2012commensurate}, and
+the (robust) meta-analytic-predictive prior
+\citep{neuenschwander2010summarizing,schmidli2014robust} all attempt to
+down-weight external data adaptively when prior--data conflict is detected
+\citep{evans2006checking,presanis2013conflict}.
 
-Amortized neural posterior estimation (NPE) offers a different route.
-Instead of rerunning MCMC or numerical optimization for every new
-current/external pair, the idea is to pretrain a neural network on many
-simulated borrowing problems and then use the trained network to output an
-approximate posterior in a single forward pass
-\citep{papamakarios2019sequential,greenberg2019automatic,cranmer2020frontier,
-lueckmann2021benchmarking}.
-The key design question is how to represent the two sources so that the
-network sees both the target estimand and the degree of non-exchangeability.
+Despite their principled foundations, classical BDB methods share several
+practical limitations that are particularly acute in healthcare applications.
+First, they summarize cross-source compatibility through one or a few
+low-dimensional quantities---a scalar discount $a_0$, a commensurability
+precision $\tau$, or a mixture weight $\epsilon$---and therefore cannot
+cleanly separate covariate shift from outcome drift, even though these two
+forms of non-exchangeability are handled very differently in practice
+\citep{galwey2017supplementation,vanrosmalen2018including}.
+Second, the discount hyperparameters themselves typically require tuning or
+careful prior specification, and the resulting borrowing strength is
+sensitive to those choices \citep{gravestock2017adaptive,viele2014use}.
+Third, every new dataset pair requires a fresh posterior fit, usually via
+MCMC, which is costly when many external-current comparisons must be run,
+when operating characteristics must be simulated, or when borrowing decisions
+must be reassessed for multiple candidate cohorts.
+Reweighting alternatives---propensity-score matching, inverse-probability
+weighting, overlap weighting, and entropy balancing
+\citep{rosenbaum1983central,stuart2010matching,li2018balancing,
+li2019addressing,hainmueller2012entropy}---address covariate shift well but
+do not correct shifts in the outcome mechanism itself
+\citep{dahabreh2019generalizing}, which is precisely the failure mode we
+observe between ADNI1 and ADNIGO/ADNI2.
 
-In this paper we focus on a summary-based NPE approach for dynamic borrowing.
+Amortized neural posterior estimation (NPE) offers a different route that
+directly targets the computational and representational limits of classical
+BDB.
+In NPE, a neural density estimator is pretrained on simulated
+parameter--data pairs so that, at inference time, it returns an approximate
+posterior in a single forward pass
+\citep{papamakarios2016fast,papamakarios2019sequential,greenberg2019automatic,
+cranmer2020frontier,lueckmann2021benchmarking,papamakarios2021normalizing}.
+Once trained, the same network can be reused across many current/external
+dataset pairs without re-running MCMC, and the representation fed into the
+network can encode richer cross-source summaries than a single compatibility
+scalar.
+The design question specific to borrowing is therefore not whether NPE can
+approximate a posterior, but how to represent the two sources so that the
+network sees both the target estimand and the structure of
+non-exchangeability, and how the resulting approximate posteriors behave
+under realistic cohort shift.
+
+In this paper we study a summary-based NPE approach for Bayesian dynamic
+borrowing under distributional shift.
+The method is pretrained on simulated current/external dataset pairs that
+span a controlled grid of exchangeability regimes---including covariate
+shift, outcome drift, and joint non-exchangeability---and is then reused
+across dataset pairs with a single forward pass.
 We first study the method in a controlled simulation setting spanning six
-exchangeability regimes, including covariate shift, outcome drift, and joint
-non-exchangeability.
-We then examine a real-data borrowing case study using the Alzheimer's Disease
-Neuroimaging Initiative (ADNI) \citep{petersen2010alzheimer,weiner2017alzheimer}.
-Specifically, ADNI1 is treated as an external cohort and ADNIGO/ADNI2 as a
-concurrent cohort among baseline mild cognitive impairment (MCI) subjects, with
-24-month conversion to dementia as the outcome.
-The ADNI example is used as a real-data borrowing problem under cohort shift,
-rather than as a randomized treatment-effect analysis.
+exchangeability regimes and compare against representative dynamic
+borrowing and reweighting baselines.
+We then present a real-data borrowing case study using the Alzheimer's
+Disease Neuroimaging Initiative (ADNI)
+\citep{petersen2010alzheimer,weiner2017alzheimer}: ADNI1 is treated as an
+external cohort and ADNIGO/ADNI2 as a concurrent cohort among baseline mild
+cognitive impairment (MCI) subjects, with 24-month conversion to dementia as
+the outcome.
+In this setting, the two cohorts have materially different event rates,
+making naive borrowing poorly calibrated; the ADNI example is used as a
+real-data borrowing problem under cohort shift rather than as a randomized
+treatment-effect analysis.
 
 Our main contributions are as follows.
 \begin{itemize}[leftmargin=1.5em, itemsep=2pt]
   \item We develop a summary-based NPE method for Bayesian dynamic
-        borrowing that replaces repeated per-dataset fitting with amortized
-        posterior inference on paired current/external data.
-  \item We evaluate the method in a controlled simulation study spanning six
-        exchangeability regimes, including settings with covariate shift,
-        outcome drift, and joint non-exchangeability.
+        borrowing that replaces repeated per-dataset posterior fitting with
+        amortized inference on paired current/external data, so that a
+        single pretrained network can be reused across many cohort pairs.
+  \item We evaluate the method in a controlled simulation study spanning
+        six exchangeability regimes, including covariate shift, outcome
+        drift, and joint non-exchangeability, and benchmark against
+        representative BDB priors and propensity-based reweighting
+        baselines.
   \item We show empirically that the main strength of the approach is
-        robustness in the harder mismatch settings, especially when the outcome
-        model differs across sources.
-  \item We present a real-data ADNI case study showing that the borrowing
+        robustness in the harder mismatch settings, especially when the
+        outcome model differs across sources---the regime where low-dimensional
+        compatibility summaries and covariate-balancing weights tend to
+        struggle.
+  \item We present a real-data ADNI case study showing that this borrowing
         problem also appears in practice and that the proposed NPE
-        formulation can recover the concurrent cohort risk level more closely
-        than naive borrowing strategies.
+        formulation can recover the concurrent-cohort risk level more
+        closely than naive borrowing strategies.
 \end{itemize}
 
 \begin{figure}[H]

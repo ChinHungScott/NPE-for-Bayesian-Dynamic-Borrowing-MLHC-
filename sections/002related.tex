@@ -1,23 +1,35 @@
 \section{Related Work}
 \label{sec:related}
 
-\subsection{Bayesian dynamic borrowing and balancing methods}
+\subsection{Bayesian dynamic borrowing and the exchangeability assumption}
 
-Dynamic borrowing methods combine information from a small current study
-$D_c$ with data from an external source $D_e$ in order to improve inference on
-a current-study parameter $\theta$.
-These designs are increasingly used in clinical development settings where
-existing trial data may help supplement a new study
-\citep{edwards2024using}.
-When the two sources are sufficiently similar, borrowing can reduce variance
-and improve precision.
-When they differ in clinically meaningful ways, however, borrowing can induce
-bias and distort uncertainty quantification.
-Existing methods mainly differ in how they assess compatibility between the
-current and external data and how that assessment is translated into borrowing
-strength.
+Integrating external information into a concurrent study has a long history
+in clinical biostatistics, beginning with the hierarchical framework of
+\citet{pocock1976combination} for combining randomized and historical
+controls.
+Let $D_c$ denote the data from a small current study and $D_e$ the data from
+an external or historical source, with a current-study target parameter
+$\theta$.
+The central statistical assumption underlying any borrowing procedure is
+\emph{exchangeability} between the two sources: that, conditional on
+covariates, observations from $D_c$ and $D_e$ share a common generative
+mechanism.
+When exchangeability holds, pooling reduces variance and improves
+precision, yielding effective sample-size gains that are especially valuable
+in rare-disease, pediatric, and oncology trials where concurrent accrual is
+limited \citep{berry2013bayesian,ventz2019design,edwards2024using}.
+When it fails---because of secular drift, differing diagnostic criteria, or
+changes in the outcome mechanism---naive pooling induces bias and can inflate
+type~I error \citep{viele2014use,koppschneider2020power,psioda2019bayesian}.
+This tension motivates \emph{dynamic} rather than fixed borrowing: methods
+that quantify cross-source compatibility and modulate the contribution of
+$D_e$ accordingly.
+Existing dynamic borrowing methods mainly differ in how they assess
+compatibility between $D_c$ and $D_e$ and how that assessment is translated
+into borrowing strength.
 
-The power prior \citep{ibrahim2000power, ibrahim2015power} incorporates
+\paragraph{Power prior.}
+The power prior \citep{ibrahim2000power,ibrahim2015power} incorporates
 external information by discounting the external likelihood through a scalar
 weight $a_0 \in [0,1]$:
 \begin{equation}
@@ -25,94 +37,150 @@ p(\theta \mid D_c, D_e, a_0)
 \;\propto\;
 L(\theta; D_c)\,L(\theta; D_e)^{a_0}\,\pi(\theta).
 \end{equation}
-When $a_0 = 1$, the two sources are fully pooled, whereas $a_0 = 0$ ignores
+When $a_0 = 1$ the two sources are fully pooled, whereas $a_0 = 0$ ignores
 the external data entirely.
-The normalized power prior \citep{ye2022normalized} treats $a_0$ as unknown
-and integrates over it, allowing the data to determine the degree of borrowing.
+Fixing $a_0$ a priori is difficult in practice.
+The normalized power prior \citep{duan2006evaluating,ye2022normalized} treats
+$a_0$ as unknown and integrates over it, and empirical-Bayes adaptive
+variants \citep{gravestock2017adaptive} plug in a data-driven estimate.
 
-The commensurate prior \citep{hobbs2011commensurate} introduces separate
-parameters for the current and external sources and links them through a
-precision parameter:
+\paragraph{Commensurate prior.}
+The commensurate prior \citep{hobbs2011commensurate,hobbs2012commensurate}
+introduces separate parameters for the current and external sources and
+links them through a precision parameter $\tau$:
 \begin{align}
-\theta_e &\sim \pi(\theta_e), \\
+\theta_e &\sim \pi(\theta_e), &
 \theta_c \mid \theta_e, \tau &\sim \mathcal{N}(\theta_e,\tau^{-1}).
 \end{align}
-Large values of $\tau$ encourage the two parameters to be close, whereas small
-values allow them to differ more freely.
-With an appropriate prior on $\tau$, the model can reduce borrowing when the
-data indicate prior-data conflict.
+Large $\tau$ encourages $\theta_c$ and $\theta_e$ to be close, whereas small
+$\tau$ allows them to differ.
+With an appropriate hyperprior on $\tau$, the posterior adaptively reduces
+borrowing under prior--data conflict \citep{evans2006checking,
+presanis2013conflict}.
 
-The robust meta-analytic-predictive (robust MAP) prior
-\citep{neuenschwander2010summarizing, schmidli2014robust} combines an
-informative prior constructed from historical data with a vague component:
+\paragraph{Meta-analytic-predictive and robust MAP priors.}
+The meta-analytic-predictive (MAP) prior
+\citep{neuenschwander2010summarizing} derives an informative prior for
+$\theta_c$ by treating historical trials as exchangeable draws from a common
+hierarchical model.
+Because exchangeability can fail in ways that are hard to anticipate,
+\citet{schmidli2014robust} proposed a robust MAP prior that mixes the
+informative component with a vague one:
 \begin{equation}
 \pi_{\text{robust}}(\theta_c)
 =
 (1-\epsilon)\,\pi_{\text{MAP}}(\theta_c)
 +
-\epsilon\,\pi_{\text{vague}}(\theta_c).
+\epsilon\,\pi_{\text{vague}}(\theta_c),
 \end{equation}
-Here $\epsilon$ is typically specified in advance and provides protection
-against conflict between historical and current data.
-This construction is especially attractive in practice because the robustness
-parameter has a transparent interpretation.
+where $\epsilon$ controls protection against conflict between historical and
+current data.
+This construction is attractive in practice because $\epsilon$ has a
+transparent interpretation, but the choice of $\epsilon$ and of the vague
+component materially affects the resulting borrowing behavior.
 
-A related class of methods approaches the problem through balancing or
+\paragraph{Limitations of classical BDB.}
+Several studies have documented recurring practical limitations of these
+methods.
+First, operating characteristics are sensitive to the discount
+hyperparameters $(a_0,\tau,\epsilon)$, and strict type~I error control
+essentially eliminates the power gains that motivated borrowing in the first
+place \citep{koppschneider2020power,galwey2017supplementation,
+vanrosmalen2018including}.
+Second, classical BDB methods summarize cross-source compatibility through
+\emph{one or a few low-dimensional quantities}, which can mask clinically
+important source differences: in particular, covariate shift and outcome
+drift enter the same scalar $a_0$ or $\tau$, even though they have very
+different implications for bias in the current-study estimand
+\citep{viele2014use,dahabreh2019generalizing}.
+Third, these models require repeated posterior fitting---typically via
+MCMC---for each new dataset pair, which is expensive when operating
+characteristics must be simulated across many scenarios, when borrowing
+decisions must be reassessed for several candidate external cohorts, or when
+the analysis must be rerun as data accrue.
+These limitations motivate borrowing procedures that can (i) exploit richer,
+multi-dimensional summaries of source compatibility, and (ii) amortize
+inference cost across many current/external pairs.
+
+\subsection{Balancing and reweighting methods}
+
+A related class of methods approaches external-data use through balancing or
 reweighting rather than hierarchical priors.
-Propensity-score methods reweight external subjects so that their covariate
-distribution better matches the current cohort \citep{stuart2010matching}.
-Inverse-probability weighting is a standard implementation, although it can be
+Propensity-score matching and weighting
+\citep{rosenbaum1983central,stuart2010matching} adjust the external cohort so
+that its covariate distribution better matches the current cohort.
+Inverse-probability weighting is a standard implementation but can be
 unstable when estimated propensity scores are close to 0 or 1
-\citep{chesnaye2022introduction}.
-Overlap weighting \citep{li2018balancing} addresses this issue by emphasizing
-subjects in the region of covariate overlap, with weights proportional to
-$2\hat e(x)(1-\hat e(x))$.
+\citep{chesnaye2022introduction}, and overlap weighting
+\citep{li2018balancing,li2019addressing} addresses this instability by
+emphasizing subjects in the region of covariate overlap, with weights
+proportional to $2\hat e(x)(1-\hat e(x))$.
+Entropy balancing \citep{hainmueller2012entropy} reweights the external
+cohort to match prespecified moments of the current cohort without estimating
+a propensity model.
+These ideas extend naturally to transportability and generalizability of
+causal estimands across populations
+\citep{dahabreh2019generalizing}.
+Regulators have also begun to formalize the use of external and synthetic
+controls in pivotal studies \citep{thorlund2020synthetic,fda2023external}.
 
-A key limitation of weighting-based approaches is that they primarily address
-differences in baseline covariates, but not differences in the outcome
-generation mechanism \citep{viele2014use, dahabreh2019generalizing}.
-In Alzheimer's disease cohorts, an external source and a current source can
-also differ in recruitment period, diagnostic practice, assessment schedule, or
-baseline conversion risk.
-In that case, balancing baseline covariates may not be enough: even if a model
-ranks patients reasonably well, the risk level or outcome relationship learned
-from the external cohort may be shifted relative to the current cohort.
-This is the kind of mismatch examined in our ADNI case study.
-
-Taken together, existing Bayesian borrowing methods and weighting approaches
-often summarize source agreement through one or a few low-dimensional
-quantities.
-That strategy can be effective in simple settings, but it can miss clinically
-important source differences that appear as calibration or outcome drift.
-This motivates borrowing methods that can use richer summaries of cross-cohort
-similarity while still targeting the current-study parameter.
+A key limitation of weighting-based approaches, however, is that they
+primarily address differences in baseline \emph{covariates} but not
+differences in the \emph{outcome} generation mechanism
+\citep{viele2014use,dahabreh2019generalizing}.
+In Alzheimer's cohorts in particular, an external and a current source can
+also differ in recruitment period, diagnostic practice, assessment schedule,
+and baseline conversion risk.
+In that case, balancing baseline covariates may not be enough: even a
+well-calibrated external model may encode a shifted outcome relationship
+relative to the current cohort.
+This calibration-level mismatch, rather than covariate imbalance, is the
+dominant failure mode in our ADNI case study.
 
 \subsection{Neural posterior estimation and simulation-based inference}
 
-Neural posterior estimation (NPE) is a class of simulation-based inference
-methods \citep{cranmer2020frontier} in which a neural network is trained to
-approximate the posterior distribution directly:
-\begin{equation}
-q_{\phi}(\theta \mid x) \approx p(\theta \mid x),
-\end{equation}
-where $x$ denotes an observed data representation.
-Training is typically based on simulated pairs $(\theta, x)$ drawn from
-$p(\theta)p(x \mid \theta)$ and minimizes the expected negative log-likelihood
+Simulation-based inference (SBI) is a family of methods that perform
+Bayesian inference using only the ability to simulate from the generative
+model \citep{cranmer2020frontier}.
+Neural posterior estimation (NPE) is the branch of SBI that trains a
+conditional density estimator $q_{\phi}(\theta \mid x)$ directly on
+simulated parameter--data pairs
+\citep{papamakarios2016fast,papamakarios2019sequential,greenberg2019automatic,
+lueckmann2021benchmarking}, with training objective
 \begin{equation}
 \mathcal{L}(\phi)
 =
-\mathbb{E}\left[-\log q_{\phi}(\theta \mid x)\right].
+\mathbb{E}_{\theta \sim \pi(\theta),\, x \sim p(x\mid \theta)}
+\left[-\log q_{\phi}(\theta \mid x)\right].
 \end{equation}
-Once trained, the network can produce an approximate posterior in a single
-forward pass, avoiding repeated posterior sampling for each new dataset
-\citep{papamakarios2019sequential, greenberg2019automatic,
-lueckmann2021benchmarking}.
+Once trained, the network can produce an approximate posterior for a new
+observation in a single forward pass, avoiding repeated posterior sampling.
+Normalizing flows are the standard choice for $q_\phi$ because they provide
+flexible, exactly-evaluable densities
+\citep{papamakarios2021normalizing}, and open-source toolkits such as
+\texttt{sbi} \citep{tejerocantero2020sbi} and \texttt{BayesFlow}
+\citep{radev2022bayesflow} have made these methods practical for scientific
+applications ranging from neuroscience \citep{goncalves2020training} to
+epidemiology.
 
-For dynamic borrowing, the representation supplied to the posterior estimator
-must encode not only information about the treatment effect, but also
-information relevant to source compatibility.
-This requirement differs from many standard simulation-based inference settings,
-where the primary challenge is compressing data without losing information
-about a single target parameter.
-In borrowing problems, the representation must also preserve structure that is
-informative about when external data should and should not influence inference.
+Two features of NPE are directly relevant to dynamic borrowing.
+First, inference is \emph{amortized}: the upfront simulation-and-training
+cost can be reused across many new dataset pairs, which matches the setting
+where the same borrowing procedure must be evaluated repeatedly as cohorts
+change.
+Second, the network's input can be any summary of the two sources, not just
+a single compatibility scalar---so long as the simulator covers the
+relevant exchangeability regimes.
+This expands the representational budget that governs how borrowing strength
+reacts to different kinds of cohort shift.
+
+For dynamic borrowing, the representation supplied to the posterior
+estimator must therefore encode both information about the target estimand
+and information about \emph{source compatibility}.
+This requirement differs from many standard SBI settings, in which the
+primary challenge is compressing data without losing information about a
+single target parameter.
+In borrowing problems, the representation must additionally preserve
+structure that is informative about when external data should and should
+not influence inference---the perspective we take in the remainder of the
+paper.
