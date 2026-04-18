@@ -1,133 +1,127 @@
-\section{Our Method}
-\label{sec:problem}
+\section{Method}
+\label{sec:method}
 
-\subsection{Dynamic borrowing setup}
+\subsection{Setup and inferential target}
 
-Let $D_c = \{(x_{ci}, y_{ci})\}_{i=1}^{n_c}$ and
-$D_e = \{(x_{ej}, y_{ej})\}_{j=1}^{n_e}$ denote the concurrent and external
-datasets, respectively.
-The inferential goal is always defined with respect to the concurrent
-population.
-External data can be useful when it is sufficiently compatible with the
-concurrent cohort, but should be downweighted or ignored when the two sources
-are not exchangeable.
+Let $\mathcal{D}_c = \{(x_{ci}, y_{ci})\}_{i=1}^{n_c}$ and
+$\mathcal{D}_e = \{(x_{ej}, y_{ej})\}_{j=1}^{n_e}$ be the concurrent and
+external datasets. Inference targets a scalar treatment effect $\theta$
+\emph{defined on the concurrent population}; the external sample is
+used only insofar as it is compatible with this population. The classical
+Bayesian approach is to specify a dynamic-borrowing prior and draw samples
+from the joint posterior $p(\theta, \phi \mid \mathcal{D}_c, \mathcal{D}_e)$,
+where $\phi$ is a borrowing-strength parameter (e.g., the power-prior
+discount $a_0$).
 
-In the stylized simulation study, the target estimand is a scalar
-current-study treatment effect $\theta$.
-The NPE method receives fixed-length summary statistics computed from
-$(D_c, D_e)$ and returns an approximate posterior
-\[
-q_{\phi}(\theta \mid s(D_c, D_e))
-\approx
-p(\theta \mid D_c, D_e),
-\]
-where $s(D_c, D_e)$ contains source-level summaries and mismatch diagnostics.
-This preserves the core dynamic borrowing goal while replacing repeated
-per-dataset Bayesian fitting with amortized posterior inference.
+\subsection{Amortized posterior inference}
 
-\subsection{Exchangeability regimes}
+We replace per-dataset posterior computation with a single pretrained
+network. Concretely, we learn an \emph{amortized} conditional posterior
+\begin{equation}
+  q_{\phi}\!\big(\theta \mid s(\mathcal{D}_c, \mathcal{D}_e)\big)
+  \;\approx\;
+  p\!\big(\theta \mid \mathcal{D}_c, \mathcal{D}_e\big),
+  \label{eq:amortized}
+\end{equation}
+where $s(\cdot,\cdot) \in \mathbb{R}^d$ is a fixed-length summary statistic
+and $\phi$ denotes network parameters. Given a prior $\pi(\theta, \psi)$
+over the target and nuisance parameters, and a simulator
+$(\theta, \psi) \mapsto (\mathcal{D}_c, \mathcal{D}_e)$, we generate
+$M$ training triples $(\theta^{(m)}, \mathcal{D}_c^{(m)}, \mathcal{D}_e^{(m)})$
+and fit $\phi$ once by amortized variational inference. At deployment, posterior
+inference for a new pair reduces to evaluating $s$ and performing one
+forward pass through $q_\phi$---an $O(1)$ operation in the sample size.
 
-The simulation study considers six regimes designed to stress-test borrowing
-methods under distinct forms of source mismatch:
+We use a Gaussian posterior family,
+\begin{equation}
+  q_{\phi}(\theta \mid s) = \mathcal{N}\!\big(m_{\phi}(s),\, \sigma_{\phi}^2(s)\big),
+  \label{eq:gaussian-head}
+\end{equation}
+trained by minimizing the expected negative log-likelihood
+\begin{equation}
+  \widehat{\phi}
+  \;=\;
+  \arg\min_{\phi}\,
+  \frac{1}{M}\sum_{m=1}^{M}
+    -\log q_{\phi}\!\big(\theta^{(m)} \,\big|\, s(\mathcal{D}_c^{(m)}, \mathcal{D}_e^{(m)})\big),
+  \label{eq:training-obj}
+\end{equation}
+which is the standard NPE objective and is minimized, in the
+well-specified limit $M \to \infty$, by the true posterior $p(\theta \mid s)$.
 
-\begin{center}
-\begin{tabular}{>{\raggedright\arraybackslash}p{0.14\linewidth}
-                p{0.78\linewidth}}
+\subsection{Summary statistics}
+\label{sec:summary-stats}
+
+The choice of $s(\mathcal{D}_c, \mathcal{D}_e)$ controls the sufficient
+statistics seen by the network. We use a 55-dimensional summary composed of
+four blocks, each designed to expose a different aspect of source
+(in)compatibility:
+\begin{enumerate}
+  \item \textbf{Marginal moments.} Per-source means and standard deviations
+    of $X$ and $Y$, and per-source sample sizes $(n_c, n_e)$.
+  \item \textbf{Conditional structure.} OLS coefficients
+    $\hat{\beta}_c, \hat{\beta}_e$ and residual variances from fitting
+    $Y \sim X$ separately in each source; the gap
+    $\Delta_\beta = \hat\beta_c - \hat\beta_e$ encodes outcome-mechanism
+    drift.
+  \item \textbf{Covariate overlap.} Propensity-score summaries based on
+    $e(x) = P(S{=}1 \mid X{=}x)$, where $S{=}1$ indexes the concurrent
+    source. External observations receive overlap weights
+    $w_j = 2\sqrt{e(x_{ej})\{1 - e(x_{ej})\}}$, which yield a weighted
+    mean, effective sample size $n_e^{\mathrm{eff}} = (\sum w_j)^2 / \sum w_j^2$,
+    and a weight concentration score.
+  \item \textbf{Joint-shift diagnostic.} Per-covariate mean gap
+    $\Delta_\mu = \bar{x}_c - \bar{x}_e$ and the scalar Wasserstein-1
+    distance between the empirical covariate distributions.
+\end{enumerate}
+This block-structured design makes the summary \emph{exchangeability-aware}:
+Block 1 detects marginal shift, Block 2 detects outcome drift, Block 3
+quantifies propensity-score overlap, and Block 4 captures joint mismatch
+that neither marginal nor conditional summaries alone would resolve.
+
+\subsection{Training distribution and regimes}
+\label{sec:regimes}
+
+The amortized posterior in \eqref{eq:amortized} is only as useful as the
+distribution over $(\mathcal{D}_c, \mathcal{D}_e)$ it was trained on. We
+therefore construct the simulator to span a taxonomy of
+source-mismatch regimes defined on two axes---covariate exchangeability
+and outcome exchangeability---yielding six scenarios (SC1--SC6) summarized
+in Table~\ref{tab:regimes}.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{cll}
 \toprule
-Scenario & Interpretation \\
+Scenario & Covariates & Outcomes \\
 \midrule
-SC1 & \textbf{All exchangeable.}
-      The external and concurrent cohorts have similar covariate distributions
-      and the same outcome mechanism. \\[2pt]
-SC2 & \textbf{Partial covariate shift.}
-      Moderate differences in covariate distributions with a similar outcome
-      mechanism. \\[2pt]
-SC3 & \textbf{Partial outcome drift.}
-      Covariate distributions are similar, but the outcome mechanism differs
-      moderately. \\[2pt]
-SC4 & \textbf{Strong covariate shift.}
-      The external cohort differs substantially in case mix. \\[2pt]
-SC5 & \textbf{Strong outcome drift.}
-      Covariate distributions are similar, but the outcome mechanism differs
-      materially. \\[2pt]
-SC6 & \textbf{Joint non-exchangeability.}
-      Both the covariate distribution and the outcome mechanism differ. \\
+SC1 & exchangeable        & exchangeable \\
+SC2 & partial shift       & exchangeable \\
+SC3 & exchangeable        & partial drift \\
+SC4 & strong shift        & exchangeable \\
+SC5 & exchangeable        & strong drift \\
+SC6 & strong shift        & strong drift \\
 \bottomrule
 \end{tabular}
-\end{center}
+\caption{Source-mismatch regimes. Rows cross two axes: covariate
+exchangeability ($\mu_e = \mu_c$ vs.\ shifted) and outcome exchangeability
+($\delta_e = 0$ vs.\ nonzero). SC1 and SC6 are the extremes; SC2--SC5
+isolate a single axis.}
+\label{tab:regimes}
+\end{table}
 
-These regimes deliberately separate settings in which mismatch is mainly
-covariate-driven from settings in which it is mainly outcome-driven.
-They provide a common evaluation grid for both classical borrowing methods and
-the amortized NPE estimator.
-
-In the simulation study, these regimes are implemented through a simple
-Gaussian data-generating model. For subject-level covariates,
-\[
-X_{ci} \sim \mathcal{N}(\mu_c\mathbf{1}_p,\Sigma),
-\qquad
-X_{ej} \sim \mathcal{N}(\mu_e\mathbf{1}_p,\Sigma),
-\]
-where $\mu_e=\mu_c$ in covariate-exchangeable settings and $\mu_e$ is shifted
-away from $\mu_c$ under covariate shift. Outcomes are generated as
-\[
-Y_{ci}=X_{ci}^{\top}\beta+\theta+\epsilon_{ci},
-\qquad
-Y_{ej}=X_{ej}^{\top}\beta+\theta+\delta_e+\epsilon_{ej},
-\qquad
-\epsilon_{si}\sim\mathcal{N}(0,\sigma^2).
-\]
-Thus $\delta_e=0$ corresponds to an exchangeable outcome mechanism, while
-$\delta_e\ne 0$ introduces outcome drift in the external source. The simulation
-sets $\theta=1$ for the non-null run and $\theta=0$ for the null run.
-
-\subsection{Exchangeability-Aware Neural
-Posterior Estimation}
-
-The NPE model operates on a fixed-length summary vector
-\[
-s(D_c, D_e)
-=
-\bigl[
-\mu_c,\sigma_c,\mu_e,\sigma_e,\Delta_{\mu},\Delta_{\beta},\text{size terms},
-\text{overlap terms}
-\bigr],
-\]
-where the exact contents are determined by the method implementation.
-In the current baseline NPE model, the summary includes source-level means and
-standard deviations, outcome summaries, simple regression-based coefficients,
-and source-overlap summaries derived from propensity scores.
-Specifically, these summaries are based on a propensity model
-$e(x)=P(S=1\mid X=x)$, where $S=1$ denotes membership in the concurrent
-source. External observations receive overlap weights
-\[
-w_j = 2\sqrt{e(X_{ej})\{1-e(X_{ej})\}},
-\]
-which are used to compute weighted external summaries and effective-sample-size
-summaries.
-
-Given simulated pairs $(\theta, D_c, D_e)$, a neural network is trained to
-approximate the posterior distribution over $\theta$.
-We use a Gaussian posterior family,
-\[
-q_{\phi}(\theta\mid s)=
-\mathcal{N}\!\left(m_{\phi}(s), \sigma_{\phi}^{2}(s)\right),
-\]
-where the network outputs $m_{\phi}(s)$ and $\log \sigma_{\phi}(s)$.
-For simulated training pairs
-$\{(\theta^{(m)},D_c^{(m)},D_e^{(m)})\}_{m=1}^M$, the training objective is
-\[
-\widehat{\phi}
-=
-\arg\min_{\phi}
-\frac{1}{M}\sum_{m=1}^M
-\left\{-\log q_{\phi}\!\left(
-\theta^{(m)}\mid s(D_c^{(m)},D_e^{(m)})
-\right)\right\}.
-\]
-The advantage of this setup is computational: the model is pretrained once, and
-posterior inference for a new current/external pair requires only a single
-forward pass through the pretrained network.
-This makes the approach attractive in settings where many candidate external
-sources might be screened repeatedly.
-
+Each regime is instantiated by a Gaussian linear model:
+\begin{align}
+  X_{ci} &\sim \mathcal{N}(\mu_c \mathbf{1}_p,\, \Sigma), &
+  X_{ej} &\sim \mathcal{N}(\mu_e \mathbf{1}_p,\, \Sigma), \\
+  Y_{ci} &= X_{ci}^\top \beta + \theta + \varepsilon_{ci}, &
+  Y_{ej} &= X_{ej}^\top \beta + \theta + \delta_e + \varepsilon_{ej},
+\end{align}
+with $\varepsilon \sim \mathcal{N}(0, \sigma^2)$. Covariate shift is
+controlled by $\mu_e - \mu_c$; outcome drift by $\delta_e$. The training
+prior $\pi$ draws $(\mu_e - \mu_c, \delta_e)$ uniformly over a range
+that includes all six regimes, so the learned $q_\phi$ is trained across
+the full shift taxonomy rather than specialized to any single regime.
+At evaluation time we fix $\theta = 1$ (power) or $\theta = 0$ (type-I
+error) and measure performance within each SC1--SC6 regime separately.
