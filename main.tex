@@ -72,19 +72,23 @@ We evaluate the approach in a controlled simulation study spanning six
 exchangeability regimes, including covariate shift, outcome drift, and joint
 non-exchangeability, and compare against representative dynamic borrowing and
 reweighting baselines.
+NPE is not uniformly best in easy exchangeable settings, but it is more stable
+when outcome drift or joint covariate/outcome mismatch causes classical
+borrowing rules to become biased and anti-conservative.
+After pretraining, NPE also returns posterior summaries in milliseconds, while
+MCMC-based borrowing baselines require repeated posterior sampling to certify
+joint posterior quality.
 We then present a real-world case study using the Alzheimer's Disease
-Neuroimaging Initiative (ADNI), where ADNI1 is treated as an external cohort
-and ADNIGO/ADNI2 as a concurrent cohort among baseline mild cognitive
-impairment subjects, with 24-month conversion to dementia as the outcome.
-In this setting, the external and concurrent cohorts have materially different
-event rates, making naive borrowing poorly calibrated.
-The ADNI application is not framed as a randomized treatment-effect analysis;
-instead, it serves as a real-data borrowing example in which the NPE framework
-is adapted to infer a concurrent cohort risk-level parameter while allowing
-external outcome drift.
-Together, the simulation study and ADNI case study show how amortized
-posterior estimation can support adaptive borrowing under realistic source
-mismatch while retaining fast reusable inference after pretraining.
+Neuroimaging Initiative (ADNI), treating ADNI1 as an external cohort and
+ADNIGO/ADNI2 as the concurrent cohort among baseline mild cognitive impairment
+subjects.
+The ADNI application is not a randomized treatment-effect analysis; instead,
+it is a real-data borrowing example in which event-rate differences make naive
+borrowing poorly calibrated.
+Together, the simulation and ADNI results suggest that amortized posterior
+estimation is most useful when source mismatch is difficult to capture with a
+fixed borrowing rule, while retaining fast reusable inference after
+pretraining.
 \end{abstract}
 
 \input{sections/001intro}
