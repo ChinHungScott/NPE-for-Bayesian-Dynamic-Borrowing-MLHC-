@@ -3,12 +3,10 @@
 
 \subsection{Design}
 
-We study the method in a simulation setting with six scenarios that represent
-different kinds of mismatch between the concurrent and external datasets.
-SC1 is the fully exchangeable case.
-SC2 and SC4 introduce covariate shift.
-SC3 and SC5 introduce outcome drift.
-SC6 combines both covariate shift and outcome drift. For each scenario, we generate one concurrent dataset and one external dataset
+We study six source-mismatch scenarios.
+SC1 is fully exchangeable; SC2 and SC4 introduce covariate shift; SC3 and
+SC5 introduce outcome drift; and SC6 combines both.
+For each scenario, we generate one concurrent dataset and one external dataset
 using the model in Section~\ref{sec:problem}.
 We consider $N_c \in \{50,100\}$ and fix $N_e=200$.
 The target parameter is the current-study effect $\theta$.
@@ -16,31 +14,22 @@ The target parameter is the current-study effect $\theta$.
 \subsection{Methods compared}
 We compare four methods:
 \begin{itemize}
-    \item \textbf{PSPower}: a
-    propensity-score-stratified power prior, which downweights the
-    external likelihood by a scalar $a_0 \in [0,1]$ estimated within
-    PS strata.
+    \item \textbf{PSPower}: a propensity-score-stratified power prior
+    with a borrowing weight estimated within PS strata.
     \item \textbf{IW} \citep{golchi2021individualized}: an individualized
-    weighting method that assigns each external subject a
-    covariate-dependent weight $\alpha_i = \exp(-d_i / h)$ with
-    $d_i$ the Mahalanobis distance to the concurrent covariate
+    weighting method based on covariate distance from the concurrent
     distribution.
     \item \textbf{Commensurate} \citep{hobbs2011commensurate}: a
-    commensurate prior that links concurrent and external effects via
-    a precision parameter $\tau$ whose posterior adapts to observed
-    compatibility.
+    commensurate prior whose precision parameter adapts to observed
+    source compatibility.
     \item \textbf{NPE} (ours): neural posterior estimation trained
-    once on simulated datasets and producing an amortized posterior
-    $p(\theta \mid \mathcal{D}_c, \mathcal{D}_e)$ in a single forward
-    pass.
+    once on simulated datasets and reused to approximate
+    $p(\theta \mid \mathcal{D}_c, \mathcal{D}_e)$ for new dataset pairs.
 \end{itemize}
 
-By theory, PSPower and Commensurate
-should perform well under near-exchangeability; IW should be robust
-under covariate shift but insensitive to outcome drift; NPE, having
-been trained across the full range of shift regimes, should remain
-competitive when mismatch is in outcomes or joint (covariate and
-outcome).
+We expect PSPower and Commensurate to work best near exchangeability, IW to
+help mainly under covariate shift, and NPE to be most useful when mismatch
+involves outcome drift or joint covariate/outcome shift.
 
 \subsection{Evaluation metrics}
 
@@ -60,14 +49,12 @@ are included in the full simulation tables in Appendix~\ref{app:additional-resul
 
 \subsection{Main results for the non-null setting}
 
-The non-null run with $\theta=1$ shows two main patterns.
-First, in the easier settings, especially SC1 and SC2, the classical methods
-already perform well, and NPE is somewhat more variable.
-Second, once the outcome model differs across sources, the picture changes.
-In SC3 and SC5, the classical borrowing methods have large bias and essentially
-no coverage, while NPE remains much closer to the true target.
-In SC6, where both covariate and outcome mismatch are present, NPE is
-substantially more stable than PSPower and Commensurate, and is close to IW.
+The non-null run with $\theta=1$ shows the clearest separation under outcome
+drift. In SC1 and SC2, the classical methods already perform well and NPE is
+somewhat more variable. In SC3 and SC5, however, the classical borrowing
+methods have large bias and essentially no coverage, while NPE remains closer
+to the current-study target. In SC6, NPE is more stable than PSPower and
+Commensurate and is close to IW.
 
 Table~\ref{tab:sim-hard-summary} gives a compact summary of the harder
 settings for $N_c=100$. The full non-null and null simulation tables are
@@ -106,15 +93,12 @@ SC6 & NPE          & 0.07 & 0.02 & 0.98 & 0.02 & 0.06 & 0.03 \\
 \renewcommand{\arraystretch}{1}
 \end{center}
 
-Figure~\ref{fig:sim-nonnull-error} summarizes non-null estimation error across
-the six scenarios. Absolute bias shows how far the point estimate moves from
-the current-study target, while RMSE combines bias and variability across
-simulation replicates. In SC3 and SC5, the classical borrowing methods move
-much farther from the center of the plot than NPE; in SC6, NPE and IW are
-similar.
+Figure~\ref{fig:sim-nonnull-error} shows the same pattern across all
+scenarios. Absolute bias measures displacement from the target, while RMSE
+also reflects variability across simulation replicates.
 
 \begin{center}
-\includegraphics[width=.95\textwidth]{fig_hex_nonnull_error_metrics.pdf}
+\includegraphics[width=.86\textwidth]{fig_hex_nonnull_error_metrics.pdf}
 \captionof{figure}{Non-null estimation error by scenario. Each spoke is one
 simulation scenario; values closer to the center indicate smaller error.}
 \label{fig:sim-nonnull-error}
@@ -122,25 +106,17 @@ simulation scenario; values closer to the center indicate smaller error.}
 
 \subsection{Null results}
 
-The null run with $\theta=0$ gives a similar robustness pattern.
-Here the main quantity of interest is Type I error.
-In SC1 and SC2, the classical methods still have cleaner operating
-characteristics, although NPE remains in a reasonable range.
-The harder settings tell a different story.
-In SC3, SC5, and SC6, the classical borrowing methods have very poor coverage
-and severely inflated Type I error, while NPE stays much closer to nominal
-behavior.
-This is especially important in the null setting because the target Type I
-error is not zero, but the nominal 0.05 level.
+The null run with $\theta=0$ gives a similar robustness pattern, now focused on
+Type I error. In SC1 and SC2, the classical methods have cleaner operating
+characteristics. In SC3, SC5, and SC6, they become anti-conservative, whereas
+NPE stays much closer to nominal behavior.
 
 The full null table is reported in Appendix~\ref{app:additional-results}.
-Figure~\ref{fig:sim-null-operating} shows coverage and Type I error in the null
-run. NPE stays near the nominal levels in the harder settings, while the
-classical borrowing methods are strongly anti-conservative when outcome drift
-is present.
+Figure~\ref{fig:sim-null-operating} shows coverage and Type I error in the
+null run.
 
 \begin{center}
-\includegraphics[width=.95\textwidth]{fig_hex_null_operating_metrics.pdf}
+\includegraphics[width=.86\textwidth]{fig_hex_null_operating_metrics.pdf}
 \captionof{figure}{Null operating characteristics by scenario. Dashed polygons
 indicate the nominal benchmark for each metric: 0.95 for coverage and 0.05 for
 Type I error.}
@@ -198,15 +174,8 @@ interim-analysis time scales.
 
 \subsection{Interpretation}
 
-The simulation results do not suggest that NPE is best in every setting.
-In SC1 and SC2, and in part of SC4, the classical methods are already stable
-and often have smaller bias and RMSE.
-The main advantage of NPE appears in the harder settings.
-When the outcome model changes across sources, as in SC3 and SC5, or when both
-covariate and outcome mismatch are present, as in SC6, the standard borrowing
-methods can have large bias, poor coverage, and inflated Type I error.
-NPE is much more stable there.
-
-Taken together, these results suggest that NPE is most useful when source
-mismatch is difficult to capture with a fixed borrowing rule, especially when the
-main problem is outcome drift rather than mild covariate shift.
+Overall, NPE is not uniformly best: in the easier regimes, classical borrowing
+methods are often more efficient. Its main advantage appears when source
+mismatch includes outcome drift or joint covariate/outcome shift, where fixed
+borrowing rules can produce large bias, poor coverage, and inflated Type I
+error.

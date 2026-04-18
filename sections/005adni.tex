@@ -34,10 +34,9 @@ X_i = (\text{age},\ \text{female},\ \text{education},\ \text{APOE4 count},\
 \text{CDRSB}_{\mathrm{bl}},\ \text{FAQ}_{\mathrm{bl}}).
 \]
 
-Table~\ref{tab:adni-cohort-summary} summarizes the two cohorts. The concurrent
-cohort contains 376 subjects with an event rate of 0.1702, whereas the
-external cohort contains 337 subjects with an event rate of 0.3769. This
-difference is large enough to make naive borrowing questionable.
+Table~\ref{tab:adni-cohort-summary} summarizes the two cohorts. The external
+cohort has a much higher conversion rate than the concurrent cohort, making
+naive borrowing questionable.
 
 \begin{table}[H]
 \centering
@@ -65,13 +64,10 @@ evaluate them on a held-out concurrent test set:
 \end{itemize}
 
 The results are shown in Table~\ref{tab:adni-baselines}. All three approaches
-have similarly high AUC and accuracy, so the main issue is not ranking
-performance. The more noticeable difference is calibration. The
-\texttt{ExternalOnly} and \texttt{Pooled} models both predict risks that are
-too high relative to the concurrent cohort. The observed concurrent event rate
-is 0.168, while the corresponding mean predicted risks are 0.248 and 0.218.
-This suggests that direct borrowing mainly distorts the level of risk rather
-than discrimination.
+have similar AUC and accuracy, but calibration differs. The
+\texttt{ExternalOnly} and \texttt{Pooled} models predict risks that are too high
+relative to the concurrent cohort, suggesting that direct borrowing mainly
+distorts the risk level rather than discrimination.
 
 \begin{table}[t]
 \centering
@@ -126,11 +122,10 @@ posterior distribution of $\theta$.
 
 \subsection{ADNI results}
 
-Table~\ref{tab:adni-main-results} shows the main ADNI result. The posterior
-mean of the concurrent risk parameter is $-1.5990$, with posterior standard
-deviation $0.8585$ and a 95\% interval of $(-3.3009,\ 0.1082)$. The observed
-concurrent event rate is 0.1702, which corresponds to an empirical concurrent
-logit risk of
+The posterior mean of the concurrent risk parameter is $-1.5990$, with
+posterior standard deviation $0.8585$ and a 95\% interval of
+$(-3.3009,\ 0.1082)$. The observed concurrent event rate is 0.1702, which
+corresponds to an empirical concurrent logit risk of
 \[
 \mathrm{logit}(0.1702) \approx -1.5841.
 \]
@@ -155,54 +150,20 @@ Empirical concurrent logit     & $-1.5841$ \\
 \end{tabular}
 \end{table}
 
-To place this result in context, we also fit simple Bayesian borrowing
-comparators on the cohort-level logit-risk scale. In these models,
-$\theta_c$ denotes the current-cohort logit risk and $\theta_e$ denotes the
-external-cohort logit risk. The comparison is made using the marginal posterior
-for $\theta_c$; for the commensurate model, we also report the marginal
-posterior for $\theta_e$ to show how the model separates the two cohorts.
-
-Table~\ref{tab:adni-comparators} shows the posterior summaries. The
-concurrent-only posterior is centered near the observed concurrent logit,
-whereas the pooled posterior is pulled toward the higher-risk ADNI1 cohort. A
-fixed power-prior analysis with $a_0=0.5$ reduces this pull but remains between
-the concurrent and pooled estimates. The commensurate model learns distinct
-current and external risk levels. NPE is also centered near the concurrent
-risk level, although its posterior interval is wider.
-
-\begin{table}[t]
-\centering
-\small
-\caption{Bayesian posterior comparison in the ADNI real-data example. All methods are reported on the cohort-level logit-risk scale.}
-\label{tab:adni-comparators}
-\begin{tabular}{llccc}
-\toprule
-Method & Parameter & Mean & SD & 95\% interval \\
-\midrule
-Concurrent-only & $\theta_c$ & $-1.589$ & 0.138 & $(-1.868,\ -1.328)$ \\
-Pooled & $\theta_c=\theta_e$ & $-1.007$ & 0.085 & $(-1.177,\ -0.845)$ \\
-Power prior ($a_0=0.5$) & $\theta_c=\theta_e$ & $-1.187$ & 0.101 & $(-1.391,\ -0.994)$ \\
-Commensurate & $\theta_c$ & $-1.569$ & 0.135 & $(-1.843,\ -1.312)$ \\
-Commensurate & $\theta_e$ & $-0.518$ & 0.112 & $(-0.742,\ -0.302)$ \\
-NPE & $\theta_c$ & $-1.599$ & 0.859 & $(-3.301,\ 0.108)$ \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Thus, NPE and the commensurate model give nearly identical posterior centers for
-the concurrent risk level in this ADNI example, although the NPE interval is
-wider. We therefore interpret the ADNI result as evidence that the NPE
+As a sensitivity check, we also fit simple Bayesian borrowing comparators on
+the cohort-level logit-risk scale. The pooled and fixed power-prior posteriors
+were pulled toward the higher-risk ADNI1 cohort, while the commensurate model
+and NPE were both centered near the concurrent risk level. NPE had the wider
+posterior interval, so we interpret the ADNI result as evidence that the NPE
 formulation can recover the later-cohort risk level in this example, not as
 evidence of greater precision.
 
 \FloatBarrier
 
 Overall, the ADNI analysis supports the same broad message as the simulation
-study. The earlier and later cohorts are not directly comparable, and direct
-borrowing tends to push the estimated risk upward. The ADNI-specific NPE
-formulation is centered close to the concurrent target, with a wider posterior
-interval than the commensurate comparator. We do not view this as a
-replacement for the simulation study, but rather as a concrete example showing
-that the borrowing problem is not only a theoretical concern.
+study: direct borrowing from a higher-risk external cohort can shift the target
+away from the later cohort. This example is not a replacement for the
+simulation study, but it shows that the borrowing problem also appears in an
+observed clinical dataset.
 
 \FloatBarrier
