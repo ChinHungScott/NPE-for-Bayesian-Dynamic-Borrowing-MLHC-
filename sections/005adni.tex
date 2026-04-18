@@ -56,12 +56,9 @@ External (ADNI1)            & 337 & 0.3769 \\
 
 Before applying NPE, we first check whether the data show the borrowing issue
 we are trying to study. We fit repeated logistic-regression baselines and
-evaluate them on a held-out concurrent test set:
-\begin{itemize}
-    \item \textbf{ConcurrentOnly}: trained only on concurrent data;
-    \item \textbf{ExternalOnly}: trained only on external data;
-    \item \textbf{Pooled}: trained on the combined external and concurrent data.
-\end{itemize}
+evaluate them on a held-out concurrent test set:  \textbf{ConcurrentOnly}: trained only on concurrent data;
+     \textbf{ExternalOnly}: trained only on external data;
+     \textbf{Pooled}: trained on the combined external and concurrent data.
 
 The results are shown in Table~\ref{tab:adni-baselines}. All three approaches
 have similar AUC and accuracy, but calibration differs. The
