@@ -117,7 +117,7 @@ The full null table is reported in Appendix~\ref{app:additional-results}.
 Figure~\ref{fig:sim-null-operating} shows coverage and Type I error in the
 null run.
 
-\begin{figure}[t]
+\begin{figure}[H]
 \centering
 \includegraphics[width=.68\textwidth]{fig_hex_null_operating_metrics.pdf}
 \caption{Null operating characteristics by scenario. Dashed polygons
@@ -125,6 +125,7 @@ indicate the nominal benchmark for each metric: 0.95 for coverage and 0.05 for
 Type I error.}
 \label{fig:sim-null-operating}
 \end{figure}
+\FloatBarrier
 \subsection{Computational timing}
 We benchmark NPE against two Bayesian dynamic-borrowing baselines that
 admit a \emph{joint} posterior over the treatment effect and the borrowing-strength parameter: the Normalized Power Prior (NPP),
