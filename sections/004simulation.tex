@@ -125,6 +125,7 @@ indicate the nominal benchmark for each metric: 0.95 for coverage and 0.05 for
 Type I error.}
 \label{fig:sim-null-operating}
 \end{figure}
+\FloatBarrier
 \subsection{Computational timing}
 We benchmark NPE against two Bayesian dynamic-borrowing baselines that
 admit a \emph{joint} posterior over the treatment effect and the borrowing-strength parameter: the Normalized Power Prior (NPP),
@@ -145,9 +146,9 @@ Wasserstein-1 distance of the marginal $\theta$-posterior to a
 long-chain NPP reference ($20{,}000$ post-burnin samples). NPE is
 timed on its single amortized forward pass.
 
-\begin{figure}[t]
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=.70\textwidth]{sections/time_to_quality_box.pdf}
+\includegraphics[width=.66\textwidth]{sections/time_to_quality_box.pdf}
 \caption{\textbf{Time to a high-quality joint posterior.}
 Per-dataset wall-clock (log scale) required to reach
 $\min(\mathrm{ESS}(\theta),\mathrm{ESS}(\phi)) \ge 1000$ for NPP and
@@ -158,22 +159,14 @@ either MCMC sampler and uniformly so across regimes.}
 \label{fig:time-to-quality}
 \end{figure}
 
-NPE returns its (marginal-$\theta$) posterior in $\approx\!8$\,ms per
-dataset across all scenarios; the Commensurate sampler requires
-$1.6$--$3.3$\,s (median) to meet the ESS target; the NPP sampler
-exhausts its $8.6$\,s budget without attaining it in $0\%$
-($\mathrm{ESS}\!\ge\!1000$) or $30\%$ ($\mathrm{ESS}\!\ge\!400$) of
-replications---its $\theta$-chain mixes slowly (median
-$\mathrm{ESS}(\theta)\approx 370$ at $32{,}000$ samples) owing to
-strong posterior correlation between $\theta$ and $a_0$.
-Two takeaways. First, NPP is \emph{correct in distribution}
-($W_1\!\approx\!0.01$ vs.\ gold) but \emph{expensive to certify}: the
-bottleneck is mixing efficiency, not inferential accuracy. Second, NPE
-delivers a usable posterior summary two-to-three orders of magnitude
-faster than either sampler and \emph{uniformly} across shift regimes,
-making amortized inference a qualitative, not merely quantitative,
-shift in the feasibility of joint Bayesian dynamic borrowing at
-interim-analysis time scales.
+NPE returns its marginal-$\theta$ posterior in about 8 ms per dataset across
+all scenarios. The Commensurate sampler requires 1.6--3.3 s (median) to meet
+the ESS target, while the NPP sampler exhausts its 8.6 s budget without
+reaching $\mathrm{ESS}\ge 1000$ in any replication. Its marginal
+$\theta$-posterior is close to the long-chain reference, but the chain mixes
+slowly because $\theta$ and $a_0$ are strongly correlated. Thus, NPP is
+accurate but expensive to certify, whereas NPE gives a usable posterior summary
+two-to-three orders of magnitude faster across shift regimes.
 \FloatBarrier
 
 \subsection{Interpretation}
