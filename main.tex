@@ -65,7 +65,7 @@ A single network is pretrained on simulated current/external dataset
 pairs spanning covariate shift, outcome drift, and joint
 non-exchangeability, and then returns an approximate posterior for the
 current-study estimand in a single forward pass.
-Through simulation studies, we demonstrate that NPE outperforms standard baselines under weak exchangeability, where baselines are biased and anti-conservative. In addition, posterior inference of our method can be obtained in milliseconds. We further analyze Alzheimer’s Disease Neuroimaging Initiative (ADNI) data and show that, when mild cognitive impairment outcomes differ across cohorts, our method provides up to $XXX\times$  
+Through simulation studies, we find that NPE is most useful under outcome drift and joint mismatch: in the harder outcome-drift regimes, it gives up to about five-fold lower absolute bias than the best classical baseline and keeps Type I error close to nominal. After pretraining, posterior summaries are obtained in about 8 ms per dataset, roughly $10^3\times$ faster than MCMC-based borrowing baselines in our timing experiment. We further analyze Alzheimer's Disease Neuroimaging Initiative (ADNI) data and show that, when mild cognitive impairment outcomes differ across cohorts, the NPE formulation recovers the later-cohort risk level in this example without claiming greater precision.
 \end{abstract}
 
 \input{sections/001intro}
