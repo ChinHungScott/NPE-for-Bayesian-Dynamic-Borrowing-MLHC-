@@ -2,12 +2,25 @@
 \label{sec:simulation}
 
 \subsection{Design}
-
-We study six source-mismatch scenarios.
-SC1 is fully exchangeable; SC2 and SC4 introduce covariate shift; SC3 and
-SC5 introduce outcome drift; and SC6 combines both.
-For each scenario, we generate one concurrent dataset and one external dataset
-using the model in Section~\ref{sec:problem}.
+We evaluate the method on the two-axis taxonomy of mismatch regimes
+introduced in Section~\ref{sec:regimes} (Table~\ref{tab:regimes}),
+instantiated as a Gaussian linear data-generating model:
+\begin{align}
+  X_{ci} &\sim \mathcal{N}(\mu_c \mathbf{1}_p,\, \Sigma), &
+  X_{ej} &\sim \mathcal{N}(\mu_e \mathbf{1}_p,\, \Sigma), \\
+  Y_{ci} &= X_{ci}^\top \beta + \theta + \varepsilon_{ci}, &
+  Y_{ej} &= X_{ej}^\top \beta + \theta + \delta_e + \varepsilon_{ej},
+\end{align}
+with $\varepsilon \sim \mathcal{N}(0, \sigma^2)$.
+Covariate shift is controlled by $\mu_e - \mu_c$ and outcome drift by
+$\delta_e$, matching the two axes of Table~\ref{tab:regimes}:
+SC1 sets both to zero, SC2 and SC4 set $\mu_e-\mu_c$ to partial and
+strong levels with $\delta_e=0$, SC3 and SC5 set $\delta_e$ to partial
+and strong levels with $\mu_e=\mu_c$, and SC6 sets both to strong
+levels. Training draws $(\mu_e-\mu_c, \delta_e)$ continuously over the
+full range that these anchor points span, so SC1--SC6 are evaluation
+points rather than training conditions.
+For each regime, we generate one concurrent and one external dataset.
 We consider $N_c \in \{50,100\}$ and fix $N_e=200$.
 The target parameter is the current-study effect $\theta$.
 

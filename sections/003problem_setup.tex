@@ -1,40 +1,73 @@
 \section{Method}
-\label{sec:method}
+\label{sec:problem}
 
 \subsection{Setup and inferential target}
 
-Let $\mathcal{D}_c = \{(x_{ci}, y_{ci})\}_{i=1}^{n_c}$ and
-$\mathcal{D}_e = \{(x_{ej}, y_{ej})\}_{j=1}^{n_e}$ be the concurrent and
+Let $D_c = \{(x_{ci}, y_{ci})\}_{i=1}^{n_c}$ and
+$D_e = \{(x_{ej}, y_{ej})\}_{j=1}^{n_e}$ denote the concurrent and
 external datasets. Inference targets a scalar treatment effect $\theta$
-\emph{defined on the concurrent population}; the external sample is
-used only insofar as it is compatible with this population. The classical
-Bayesian approach is to specify a dynamic-borrowing prior and draw samples
-from the joint posterior $p(\theta, \phi \mid \mathcal{D}_c, \mathcal{D}_e)$,
-where $\phi$ is a borrowing-strength parameter (e.g., the power-prior
-discount $a_0$).
+defined on the \emph{concurrent} population; the external sample enters
+the analysis only to the extent that it is compatible with that population.
+Classical Bayesian dynamic borrowing formalizes this qualification through
+a borrowing-strength parameter $\phi$---the power-prior discount $a_0$,
+the commensurability precision $\tau$, or an analogous quantity---and draws
+from the joint posterior $p(\theta, \phi \mid D_c, D_e)$.
+
+The joint posterior $p(\theta, \phi \mid D_c, D_e)$ is not a single
+object but a family indexed by modeling choices: the hyperprior on
+$\phi$ (e.g., a $\mathrm{Beta}(a,b)$ on $a_0$, a half-normal scale on
+$\tau$, or the mixture weight $\epsilon$ in a robust MAP prior), the
+prior on $\theta$, and the parameterization of the borrowing component.
+Responsible reporting (required by FDA) therefore typically requires sweeping over
+several of these
+\citep{schmidli2014robust,gravestock2017adaptive,vanrosmalen2018including},
+and MCMC must be rerun for each combination as well as for each new
+cohort pair or prior parameter.
+Our runtime study in Section~\ref{sec:simulation} shows that a single
+joint $(\theta, \phi)$ fit takes seconds under good mixing and longer
+otherwise, and this cost multiplies across sensitivity settings,
+cohorts, and subgroups.
 
 \subsection{Amortized posterior inference}
 
-We replace per-dataset posterior computation with a single pretrained
-network. Concretely, we learn an \emph{amortized} conditional posterior
+Rather than re-solving the posterior per configuration, we train a single
+conditional density estimator that maps any plausible
+$(D_c, D_e)$ pair to an approximate posterior for $\theta$:
 \begin{equation}
-  q_{\phi}\!\big(\theta \mid s(\mathcal{D}_c, \mathcal{D}_e)\big)
+  q_{\phi}\!\bigl(\theta \mid s(D_c, D_e)\bigr)
   \;\approx\;
-  p\!\big(\theta \mid \mathcal{D}_c, \mathcal{D}_e\big),
+  p\!\bigl(\theta \mid D_c, D_e\bigr),
   \label{eq:amortized}
 \end{equation}
-where $s(\cdot,\cdot) \in \mathbb{R}^d$ is a fixed-length summary statistic
-and $\phi$ denotes network parameters. Given a prior $\pi(\theta, \psi)$
-over the target and nuisance parameters, and a simulator
-$(\theta, \psi) \mapsto (\mathcal{D}_c, \mathcal{D}_e)$, we generate
-$M$ training triples $(\theta^{(m)}, \mathcal{D}_c^{(m)}, \mathcal{D}_e^{(m)})$
-and fit $\phi$ once by amortized variational inference. At deployment, posterior
-inference for a new pair reduces to evaluating $s$ and performing one
-forward pass through $q_\phi$---an $O(1)$ operation in the sample size.
+where $s(\cdot,\cdot) \in \mathbb{R}^d$ is a fixed-length summary of the
+two datasets and $\phi$ are the parameters of a neural network.
+Training proceeds by simulation: given a prior $\pi(\theta, \psi)$ over the
+target and nuisance parameters, a simulator
+$(\theta, \psi) \mapsto (D_c, D_e)$, and $M$ simulated triples
+$(\theta^{(m)}, D_c^{(m)}, D_e^{(m)})$, the parameters $\phi$ are
+fit once. At deployment, inference for a new pair
+$(D_c, D_e)$ reduces to computing $s$ and a single forward pass;
+the online cost is independent of $M$ and does not require additional
+sampling.
+The approximation \eqref{eq:amortized} is valid only over the support of
+the training simulator, so its fidelity depends directly on how broadly
+the simulator covers plausible mismatch patterns (Section~\ref{sec:regimes}).
+
+Amortization also aligns well with the structure of the borrowing problem.
+The degree of borrowing is not a free analyst-specified quantity: it is
+determined by the compatibility between $D_c$ and $D_e$. Classical
+methods infer this compatibility implicitly through the posterior on $\phi$.
+Here it is represented indirectly through $s$: if the simulator spans
+regimes from full exchangeability to strong mismatch, the network can
+learn how much to borrow as a function of observed mismatch.
+The resulting $q_{\phi}(\theta \mid s)$ approximates the Bayes rule
+\emph{induced by the training simulator}, not a universally optimal one;
+the simulator's coverage is therefore part of the method rather than an
+afterthought.
 
 We use a Gaussian posterior family,
 \begin{equation}
-  q_{\phi}(\theta \mid s) = \mathcal{N}\!\big(m_{\phi}(s),\, \sigma_{\phi}^2(s)\big),
+  q_{\phi}(\theta \mid s) = \mathcal{N}\!\bigl(m_{\phi}(s),\, \sigma_{\phi}^2(s)\bigr),
   \label{eq:gaussian-head}
 \end{equation}
 trained by minimizing the expected negative log-likelihood
@@ -43,51 +76,88 @@ trained by minimizing the expected negative log-likelihood
   \;=\;
   \arg\min_{\phi}\,
   \frac{1}{M}\sum_{m=1}^{M}
-    -\log q_{\phi}\!\big(\theta^{(m)} \,\big|\, s(\mathcal{D}_c^{(m)}, \mathcal{D}_e^{(m)})\big),
+    -\log q_{\phi}\!\bigl(\theta^{(m)} \,\big|\, s(D_c^{(m)}, D_e^{(m)})\bigr).
   \label{eq:training-obj}
 \end{equation}
-which is the standard NPE objective and is minimized, in the
-well-specified limit $M \to \infty$, by the true posterior $p(\theta \mid s)$.
+Two remarks on this choice.
+First, \eqref{eq:training-obj} is the standard NPE objective; as
+$M \to \infty$ and for sufficiently expressive $q_\phi$, its minimizer
+converges to $p(\theta \mid s)$
+\citep{papamakarios2016fast,greenberg2019automatic}.
+Second, the Gaussian head is a deliberate simplification.
+Posteriors for a scalar treatment effect under weakly informative priors
+and moderate sample sizes are typically close to Gaussian, and in
+preliminary experiments richer density families standard in NPE
+(normalizing flows, mixture heads) did not yield measurable gains in this
+setting while introducing additional calibration concerns. We therefore
+default to the Gaussian head.
 
 \subsection{Summary statistics}
 \label{sec:summary-stats}
 
-The choice of $s(\mathcal{D}_c, \mathcal{D}_e)$ controls the sufficient
-statistics seen by the network. We use a 55-dimensional summary composed of
-four blocks, each designed to expose a different aspect of source
-(in)compatibility:
+Because the network sees the data only through $s(D_c, D_e)$, the design
+of $s$ is the main modeling lever.
+We aim for a summary that is approximately sufficient for the mismatch
+structure relevant to $\theta$: pairs $(D_c, D_e)$ that should yield the
+same posterior on $\theta$ should, under the simulator, yield similar $s$.
+
+In addition to the original data space, we use a summary assembled from four blocks, each
+targeting a distinct facet of source (in)compatibility:
 \begin{enumerate}
-  \item \textbf{Marginal moments.} Per-source means and standard deviations
-    of $X$ and $Y$, and per-source sample sizes $(n_c, n_e)$.
+  \item \textbf{Marginal moments.} Per-source means and standard
+    deviations of $X$ and $Y$, together with the sample sizes
+    $(n_c, n_e)$. Intended to detect first- and second-moment shifts.
   \item \textbf{Conditional structure.} OLS coefficients
-    $\hat{\beta}_c, \hat{\beta}_e$ and residual variances from fitting
-    $Y \sim X$ separately in each source; the gap
-    $\Delta_\beta = \hat\beta_c - \hat\beta_e$ encodes outcome-mechanism
-    drift.
+    $\hat{\beta}_c, \hat{\beta}_e$ and residual variances obtained by
+    fitting $Y \sim X$ separately in each source.
+    The gap $\Delta_\beta = \hat\beta_c - \hat\beta_e$ is intended as a
+    signal of outcome-mechanism drift that marginal summaries cannot see.
   \item \textbf{Covariate overlap.} Propensity-score summaries based on
     $e(x) = P(S{=}1 \mid X{=}x)$, where $S{=}1$ indexes the concurrent
-    source. External observations receive overlap weights
-    $w_j = 2\sqrt{e(x_{ej})\{1 - e(x_{ej})\}}$, which yield a weighted
-    mean, effective sample size $n_e^{\mathrm{eff}} = (\sum w_j)^2 / \sum w_j^2$,
-    and a weight concentration score.
-  \item \textbf{Joint-shift diagnostic.} Per-covariate mean gap
-    $\Delta_\mu = \bar{x}_c - \bar{x}_e$ and the scalar Wasserstein-1
-    distance between the empirical covariate distributions.
+    source. External observations carry overlap weights
+    $w_j = 2\sqrt{e(x_{ej})\{1 - e(x_{ej})\}}$, from which we compute a
+    weighted external mean, the effective sample size
+    $n_e^{\mathrm{eff}} = (\sum_j w_j)^2 / \sum_j w_j^2$, and a weight
+    concentration score. These summarize propensity-score overlap, the
+    quantity used by propensity-based borrowing baselines.
+  \item \textbf{Joint-shift diagnostic.} The per-covariate mean gap
+    $\Delta_\mu = \bar{x}_c - \bar{x}_e$ and the Wasserstein-1 distance
+    between the empirical covariate distributions. Intended to capture
+    joint mismatch that marginal or conditional summaries alone may not
+    resolve.
 \end{enumerate}
-This block-structured design makes the summary \emph{exchangeability-aware}:
-Block 1 detects marginal shift, Block 2 detects outcome drift, Block 3
-quantifies propensity-score overlap, and Block 4 captures joint mismatch
-that neither marginal nor conditional summaries alone would resolve.
+The blocks are designed to be partially redundant in exchangeable regimes
+and complementary under mismatch: under exchangeability all four blocks
+are expected to read small values, covariate shift is reflected primarily
+in Blocks~3--4, outcome drift primarily in Block~2, and joint mismatch in
+Blocks~2 and 4 together. We refer to this block structure as
+\emph{exchangeability-aware} in the sense that the summary is organized by
+type of mismatch rather than by a single compatibility scalar;
+whether the network makes effective use of this structure is an empirical
+question that we examine in Section~\ref{sec:simulation}.
 
-\subsection{Training distribution and regimes}
+\subsection{Pretraining via simulated borrowing scenarios}
 \label{sec:regimes}
 
-The amortized posterior in \eqref{eq:amortized} is only as useful as the
-distribution over $(\mathcal{D}_c, \mathcal{D}_e)$ it was trained on. We
-therefore construct the simulator to span a taxonomy of
-source-mismatch regimes defined on two axes---covariate exchangeability
-and outcome exchangeability---yielding six scenarios (SC1--SC6) summarized
-in Table~\ref{tab:regimes}.
+Because \eqref{eq:amortized} holds only on the support of the training
+distribution, pretraining is part of the method rather than a
+preprocessing step: $q_\phi$ is only as informed about mismatch as the
+simulator exposes.
+The simulator must produce paired datasets $(D_c, D_e)$ across a
+spectrum of mismatch conditions together with the $\theta$ that
+generated them; drawing $M$ such triples and minimizing
+\eqref{eq:training-obj} yields a network reusable across downstream
+analyses.
+
+We specify the simulator at the level of \emph{what mismatch must be
+represented}, not a particular data-generating form.
+Two axes---covariate exchangeability and outcome exchangeability---cover
+the borrowing problems we consider, yielding the six regimes of
+Table~\ref{tab:regimes}. During pretraining we sample these two axes
+\emph{continuously} from broad priors spanning SC1 through SC6, so
+$q_\phi$ learns a smooth map from observed mismatch to posterior; the
+discrete grid is reserved for interpretable evaluation
+(Section~\ref{sec:simulation}).
 
 \begin{table}[t]
 \centering
@@ -104,24 +174,14 @@ SC5 & exchangeable        & strong drift \\
 SC6 & strong shift        & strong drift \\
 \bottomrule
 \end{tabular}
-\caption{Source-mismatch regimes. Rows cross two axes: covariate
-exchangeability ($\mu_e = \mu_c$ vs.\ shifted) and outcome exchangeability
-($\delta_e = 0$ vs.\ nonzero). SC1 and SC6 are the extremes; SC2--SC5
-isolate a single axis.}
+\caption{Two-axis taxonomy of source-mismatch regimes defining the
+pretraining support. SC1 and SC6 are the extremes; SC2--SC5 isolate a
+single axis each.}
 \label{tab:regimes}
 \end{table}
 
-Each regime is instantiated by a Gaussian linear model:
-\begin{align}
-  X_{ci} &\sim \mathcal{N}(\mu_c \mathbf{1}_p,\, \Sigma), &
-  X_{ej} &\sim \mathcal{N}(\mu_e \mathbf{1}_p,\, \Sigma), \\
-  Y_{ci} &= X_{ci}^\top \beta + \theta + \varepsilon_{ci}, &
-  Y_{ej} &= X_{ej}^\top \beta + \theta + \delta_e + \varepsilon_{ej},
-\end{align}
-with $\varepsilon \sim \mathcal{N}(0, \sigma^2)$. Covariate shift is
-controlled by $\mu_e - \mu_c$; outcome drift by $\delta_e$. The training
-prior $\pi$ draws $(\mu_e - \mu_c, \delta_e)$ uniformly over a range
-that includes all six regimes, so the learned $q_\phi$ is trained across
-the full shift taxonomy rather than specialized to any single regime.
-At evaluation time we fix $\theta = 1$ (power) or $\theta = 0$ (type-I
-error) and measure performance within each SC1--SC6 regime separately.
+The concrete data-generating form is application-dependent: a Gaussian
+linear model for the simulation study (Section~\ref{sec:simulation})
+and a binary-outcome model calibrated to the cohort for ADNI
+(Section~\ref{sec:adni}). The same $q_\phi$ pipeline applies in both
+cases; only the simulator, and hence the pretrained weights, differ.
