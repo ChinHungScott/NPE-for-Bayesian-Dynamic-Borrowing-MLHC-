@@ -47,7 +47,7 @@ $(\theta, \psi) \mapsto (D_c, D_e)$, and $M$ simulated triples
 $(\theta^{(m)}, D_c^{(m)}, D_e^{(m)})$, the parameters $\phi$ are
 fit once. At deployment, inference for a new pair
 $(D_c, D_e)$ reduces to computing $s$ and a single forward pass;
-the online cost is independent of $M$ and does not require additional
+the per-dataset inference cost is independent of $M$ and does not require additional
 sampling.
 The approximation \eqref{eq:amortized} is valid only over the support of
 the training simulator, so its fidelity depends directly on how broadly
