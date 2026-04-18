@@ -62,6 +62,7 @@ reported in Appendix~\ref{app:additional-results}.
 The MCSE columns help distinguish the large method differences in these
 settings from simulation noise.
 
+\vspace{0.35em}
 \begin{center}
 \scriptsize
 \renewcommand{\arraystretch}{0.92}
@@ -97,12 +98,13 @@ Figure~\ref{fig:sim-nonnull-error} shows the same pattern across all
 scenarios. Absolute bias measures displacement from the target, while RMSE
 also reflects variability across simulation replicates.
 
-\begin{center}
-\includegraphics[width=.86\textwidth]{fig_hex_nonnull_error_metrics.pdf}
-\captionof{figure}{Non-null estimation error by scenario. Each spoke is one
+\begin{figure}[t]
+\centering
+\includegraphics[width=.80\textwidth]{fig_hex_nonnull_error_metrics.pdf}
+\caption{Non-null estimation error by scenario. Each spoke is one
 simulation scenario; values closer to the center indicate smaller error.}
 \label{fig:sim-nonnull-error}
-\end{center}
+\end{figure}
 
 \subsection{Null results}
 
@@ -115,13 +117,14 @@ The full null table is reported in Appendix~\ref{app:additional-results}.
 Figure~\ref{fig:sim-null-operating} shows coverage and Type I error in the
 null run.
 
-\begin{center}
-\includegraphics[width=.86\textwidth]{fig_hex_null_operating_metrics.pdf}
-\captionof{figure}{Null operating characteristics by scenario. Dashed polygons
+\begin{figure}[t]
+\centering
+\includegraphics[width=.80\textwidth]{fig_hex_null_operating_metrics.pdf}
+\caption{Null operating characteristics by scenario. Dashed polygons
 indicate the nominal benchmark for each metric: 0.95 for coverage and 0.05 for
 Type I error.}
 \label{fig:sim-null-operating}
-\end{center}
+\end{figure}
 \subsection{Computational timing}
 We benchmark NPE against two Bayesian dynamic-borrowing baselines that
 admit a \emph{joint} posterior over the treatment effect and the borrowing-strength parameter: the Normalized Power Prior (NPP),
@@ -142,9 +145,10 @@ Wasserstein-1 distance of the marginal $\theta$-posterior to a
 long-chain NPP reference ($20{,}000$ post-burnin samples). NPE is
 timed on its single amortized forward pass.
 
-\begin{center}
-\includegraphics[width=.76\textwidth]{sections/time_to_quality_box.pdf}
-\captionof{figure}{\textbf{Time to a high-quality joint posterior.}
+\begin{figure}[t]
+\centering
+\includegraphics[width=.70\textwidth]{sections/time_to_quality_box.pdf}
+\caption{\textbf{Time to a high-quality joint posterior.}
 Per-dataset wall-clock (log scale) required to reach
 $\min(\mathrm{ESS}(\theta),\mathrm{ESS}(\phi)) \ge 1000$ for NPP and
 Commensurate; NPE is timed on its single amortized forward pass.
@@ -152,7 +156,7 @@ Boxes span the IQR across $B=5$ replications $\times$ four
 distribution-shift scenarios. NPE is $\sim\!10^3\times$ faster than
 either MCMC sampler and uniformly so across regimes.}
 \label{fig:time-to-quality}
-\end{center}
+\end{figure}
 
 NPE returns its (marginal-$\theta$) posterior in $\approx\!8$\,ms per
 dataset across all scenarios; the Commensurate sampler requires
