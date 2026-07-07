@@ -136,6 +136,13 @@ Our main contributions are as follows.
     \label{fig:method-overview}
 \end{figure}
 
+Figure~\ref{fig:method-overview} also gives the operational view of the
+method. During pretraining, simulated current/external pairs are generated
+under a range of source-mismatch scenarios, summarized, and used to train the
+posterior estimator once. During inference, no new posterior sampler is run:
+the same summaries are computed for the observed pair, and a single forward
+pass returns the approximate posterior for the current-study target.
+
 The remainder of the paper is organized as follows.
 Section~\ref{sec:related} reviews dynamic borrowing, balancing methods, and
 simulation-based inference.

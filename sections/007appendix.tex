@@ -189,6 +189,10 @@ output head returning the posterior mean and log-standard-deviation of
 $\theta$. Dropout is disabled at inference, so posterior evaluation for a
 new current--external pair is a single deterministic forward pass after
 computing the same summaries used during pretraining.
+We also tested richer scalar-output density heads, including mixture-style
+alternatives, during method development. They did not improve calibration or
+operating characteristics for this scalar target in our experiments, so we
+kept the Gaussian head for stability and simplicity.
 
 For each simulated training triplet, the simulator draws the scalar target
 $\theta$, regression coefficients $\beta$, noise scale $\sigma$, concurrent
@@ -256,6 +260,8 @@ We also ran exploratory non-null simulations for several NPE variants that add
 explicit source-discrepancy summaries to the input representation.
 The goal of these variants was to see whether additional discrepancy features
 could reduce bias in the harder mismatch settings.
+They also serve as a check on whether the base summary vector omits an
+important source-mismatch signal for the scalar target studied here.
 The added summaries include Kullback--Leibler (KL) divergence, optimal
 transport (OT) distance, the Kolmogorov--Smirnov (KS) statistic, a combined
 KL+KS representation, and Jensen--Shannon divergence (JSD).
