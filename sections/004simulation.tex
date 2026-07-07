@@ -19,10 +19,13 @@ strong levels with $\delta_e=0$, SC3 and SC5 set $\delta_e$ to partial
 and strong levels with $\mu_e=\mu_c$, and SC6 sets both to strong
 levels. Training draws $(\mu_e-\mu_c, \delta_e)$ continuously over the
 full range that these anchor points span, so SC1--SC6 are evaluation
-points rather than training conditions.
+points rather than training conditions. We use this grid as a scenario-level
+ablation: each regime turns on a specific mismatch axis, or their
+combination, so changes in bias, coverage, and Type I error can be attributed
+to the kind of non-exchangeability present.
 For each regime, we generate one concurrent and one external dataset.
 We consider $N_c \in \{50,100\}$ and fix $N_e=200$.
-The target parameter is the current-study effect $\theta$.
+The target parameter is the additive current-study target $\theta$.
 
 \subsection{Methods compared}
 We compare four methods:

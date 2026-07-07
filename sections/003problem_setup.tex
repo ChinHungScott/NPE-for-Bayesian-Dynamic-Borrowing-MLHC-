@@ -5,13 +5,35 @@
 
 Let $D_c = \{(x_{ci}, y_{ci})\}_{i=1}^{n_c}$ and
 $D_e = \{(x_{ej}, y_{ej})\}_{j=1}^{n_e}$ denote the concurrent and
-external datasets. Inference targets a scalar treatment effect $\theta$
-defined on the \emph{concurrent} population; the external sample enters
-the analysis only to the extent that it is compatible with that population.
+external datasets. Inference targets a scalar current-study parameter
+$\theta$ defined on the \emph{concurrent} population; the external sample
+enters the analysis only to the extent that it is compatible with that
+population. In the Gaussian simulations, $\theta$ is an additive
+current-study effect; in the ADNI example, $\theta$ is a cohort-level
+logit-risk parameter.
 Classical Bayesian dynamic borrowing formalizes this qualification through
 a borrowing-strength parameter $\phi$---the power-prior discount $a_0$,
 the commensurability precision $\tau$, or an analogous quantity---and draws
 from the joint posterior $p(\theta, \phi \mid D_c, D_e)$.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Notation used in the borrowing setup.}
+\label{tab:notation}
+\begin{tabular}{ll}
+\toprule
+Symbol & Meaning \\
+\midrule
+$D_c, D_e$ & Concurrent and external datasets \\
+$n_c, n_e$ & Concurrent and external sample sizes \\
+$\theta$ & Scalar current-study target parameter \\
+$\phi$ & Borrowing-strength parameter in classical BDB methods \\
+$s(D_c,D_e)$ & Fixed-length summary vector computed from both sources \\
+$q_\eta(\theta\mid s)$ & NPE approximate posterior for $\theta$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 The joint posterior $p(\theta, \phi \mid D_c, D_e)$ is not a single
 object but a family indexed by modeling choices: the hyperprior on
@@ -34,13 +56,13 @@ Rather than re-solving the posterior per configuration, we train a single
 conditional density estimator that maps any plausible
 $(D_c, D_e)$ pair to an approximate posterior for $\theta$:
 \begin{equation}
-  q_{\phi}\!\bigl(\theta \mid s(D_c, D_e)\bigr)
+  q_{\eta}\!\bigl(\theta \mid s(D_c, D_e)\bigr)
   \;\approx\;
   p\!\bigl(\theta \mid D_c, D_e\bigr),
   \label{eq:amortized}
 \end{equation}
 where $s(\cdot,\cdot) \in \mathbb{R}^d$ is a fixed-length summary of the
-two datasets and $\phi$ are the parameters of a neural network.
+two datasets and $\eta$ are the parameters of a neural network.
 Training proceeds by simulation: given a prior $\pi(\theta, \psi)$ over the
 target and nuisance parameters, a simulator
 $(\theta, \psi) \mapsto (D_c, D_e)$, and $M$ simulated triples
@@ -60,37 +82,39 @@ methods infer this compatibility implicitly through the posterior on $\phi$.
 Here it is represented indirectly through $s$: if the simulator spans
 regimes from full exchangeability to strong mismatch, the network can
 learn how much to borrow as a function of observed mismatch.
-The resulting $q_{\phi}(\theta \mid s)$ approximates the Bayes rule
+The resulting $q_{\eta}(\theta \mid s)$ approximates the Bayes rule
 \emph{induced by the training simulator}, not a universally optimal one;
 the simulator's coverage is therefore part of the method rather than an
 afterthought.
 
 We use a Gaussian posterior family,
 \begin{equation}
-  q_{\phi}(\theta \mid s) = \mathcal{N}\!\bigl(m_{\phi}(s),\, \sigma_{\phi}^2(s)\bigr),
+  q_{\eta}(\theta \mid s) = \mathcal{N}\!\bigl(m_{\eta}(s),\, \sigma_{\eta}^2(s)\bigr),
   \label{eq:gaussian-head}
 \end{equation}
 trained by minimizing the expected negative log-likelihood
 \begin{equation}
-  \widehat{\phi}
+  \widehat{\eta}
   \;=\;
-  \arg\min_{\phi}\,
+  \arg\min_{\eta}\,
   \frac{1}{M}\sum_{m=1}^{M}
-    -\log q_{\phi}\!\bigl(\theta^{(m)} \,\big|\, s(D_c^{(m)}, D_e^{(m)})\bigr).
+    -\log q_{\eta}\!\bigl(\theta^{(m)} \,\big|\, s(D_c^{(m)}, D_e^{(m)})\bigr).
   \label{eq:training-obj}
 \end{equation}
 Two remarks on this choice.
 First, \eqref{eq:training-obj} is the standard NPE objective; as
-$M \to \infty$ and for sufficiently expressive $q_\phi$, its minimizer
+$M \to \infty$ and for sufficiently expressive $q_\eta$, its minimizer
 converges to $p(\theta \mid s)$
 \citep{papamakarios2016fast,greenberg2019automatic}.
 Second, the Gaussian head is a deliberate simplification.
-Posteriors for a scalar treatment effect under weakly informative priors
+Posteriors for a scalar target under weakly informative priors
 and moderate sample sizes are typically close to Gaussian, and in
 preliminary experiments richer density families standard in NPE
 (normalizing flows, mixture heads) did not yield measurable gains in this
 setting while introducing additional calibration concerns. We therefore
 default to the Gaussian head.
+Architecture and training details are reported in
+Appendix~\ref{app:implementation}.
 
 \subsection{Summary statistics}
 \label{sec:summary-stats}
@@ -135,13 +159,22 @@ Blocks~2 and 4 together. We refer to this block structure as
 type of mismatch rather than by a single compatibility scalar;
 whether the network makes effective use of this structure is an empirical
 question that we examine in Section~\ref{sec:simulation}.
+This organization also gives a simple auditing layer: before trusting a
+posterior, an analyst can inspect whether the observed pair is unusual in
+the marginal-moment block, the outcome-mechanism block, the overlap block,
+or the joint-shift block. The neural network itself is not intrinsically
+interpretable, and if the relevant mismatch is absent from these summaries,
+posterior quality can degrade; the intent is to make the main mismatch
+signals explicit rather than hidden in an opaque latent representation.
+Appendix~\ref{app:ols-perturbation} reports a perturbation check for the
+OLS-derived coefficient-difference block.
 
 \subsection{Pretraining via simulated borrowing scenarios}
 \label{sec:regimes}
 
 Because \eqref{eq:amortized} holds only on the support of the training
 distribution, pretraining is part of the method rather than a
-preprocessing step: $q_\phi$ is only as informed about mismatch as the
+preprocessing step: $q_\eta$ is only as informed about mismatch as the
 simulator exposes.
 The simulator must produce paired datasets $(D_c, D_e)$ across a
 spectrum of mismatch conditions together with the $\theta$ that
@@ -149,13 +182,25 @@ generated them; drawing $M$ such triples and minimizing
 \eqref{eq:training-obj} yields a network reusable across downstream
 analyses.
 
+This simulation step is not fit to the analysis data. It plays the role of a
+prior-generating model: the analyst specifies plausible ranges for the target,
+nuisance parameters, covariate shift, and outcome drift, then trains the NPE
+on data pairs drawn from that range. At inference time the pretrained network
+sees only the observed summaries $s(D_c,D_e)$ from the real current/external
+pair. Thus, as in any Bayesian borrowing analysis, the key modeling
+assumption is that the observed pair lies within the support of the prior
+predictive distribution induced by the simulator. These ranges can be elicited
+from domain knowledge, published cohort summaries, or deliberately conservative
+bounds when little prior evidence is available; they are not tuned to the
+observed target answer.
+
 We specify the simulator at the level of \emph{what mismatch must be
 represented}, not a particular data-generating form.
 Two axes---covariate exchangeability and outcome exchangeability---cover
 the borrowing problems we consider, yielding the six regimes of
 Table~\ref{tab:regimes}. During pretraining we sample these two axes
 \emph{continuously} from broad priors spanning SC1 through SC6, so
-$q_\phi$ learns a smooth map from observed mismatch to posterior; the
+$q_\eta$ learns a smooth map from observed mismatch to posterior; the
 discrete grid is reserved for interpretable evaluation
 (Section~\ref{sec:simulation}).
 
@@ -174,14 +219,15 @@ SC5 & exchangeable        & strong drift \\
 SC6 & strong shift        & strong drift \\
 \bottomrule
 \end{tabular}
-\caption{Two-axis taxonomy of source-mismatch regimes defining the
-pretraining support. SC1 and SC6 are the extremes; SC2--SC5 isolate a
-single axis each.}
+\caption{Two-axis taxonomy of source-mismatch regimes. SC1 is the
+exchangeable baseline; SC2 and SC4 isolate covariate shift at increasing
+strength; SC3 and SC5 isolate outcome drift at increasing strength; and SC6
+combines strong covariate shift with strong outcome drift.}
 \label{tab:regimes}
 \end{table}
 
 The concrete data-generating form is application-dependent: a Gaussian
 linear model for the simulation study (Section~\ref{sec:simulation})
 and a binary-outcome model calibrated to the cohort for ADNI
-(Section~\ref{sec:adni}). The same $q_\phi$ pipeline applies in both
+(Section~\ref{sec:adni}). The same $q_\eta$ pipeline applies in both
 cases; only the simulator, and hence the pretrained weights, differ.

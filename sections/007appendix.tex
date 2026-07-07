@@ -177,6 +177,79 @@ applicable.}
 \label{fig:app-sim-additional}
 \end{center}
 \FloatBarrier
+
+\subsection{Implementation and Training Details}
+\label{app:implementation}
+
+The NPE estimator used in the main experiments is a fully connected
+multilayer perceptron applied to the concatenated summary vector
+$s(D_c,D_e)$. The network has hidden layers of sizes
+$[128,128,64]$, ReLU activations, dropout during training, and a Gaussian
+output head returning the posterior mean and log-standard-deviation of
+$\theta$. Dropout is disabled at inference, so posterior evaluation for a
+new current--external pair is a single deterministic forward pass after
+computing the same summaries used during pretraining.
+
+For each simulated training triplet, the simulator draws the scalar target
+$\theta$, regression coefficients $\beta$, noise scale $\sigma$, concurrent
+covariate location $\mu_c$, the covariate-shift magnitude, the outcome-drift
+magnitude $\delta_e$, and the mismatch type from the corresponding
+pretraining distributions. The external sample size is fixed at
+$n_e=200$, while the concurrent sample size is sampled from
+$n_c\in\{50,100,200,500\}$ during pretraining. The evaluation grid in the
+main simulation is narrower, using $n_c\in\{50,100\}$, so that the behavior
+of each method can be compared under the interpretable SC1--SC6 regimes.
+
+The conditional-structure summary block is data-derived. In the synthetic
+experiments, the network is not given the true $\beta$. Instead, we fit
+separate OLS models in the concurrent and external datasets and provide the
+estimated coefficient differences as part of $s(D_c,D_e)$. The true
+$\beta$ is used only by the simulator to generate data and to evaluate
+operating characteristics.
+
+\subsection{Perturbing the OLS-Derived Summary Block}
+\label{app:ols-perturbation}
+
+To check whether the method relies too heavily on the OLS-derived
+coefficient-difference block, we reran the SC5 outcome-drift setting with
+$n_c=100$ and added independent Gaussian noise to that block before
+standardizing the summary vector and applying the pretrained network.
+Table~\ref{tab:ols-perturbation} reports the resulting operating
+characteristics over 50 simulation replicates. Coverage remains at or above
+the nominal 95\% level for noise standard deviations up to 0.15, while
+absolute bias increases gradually from 0.22 to 0.30. This suggests that the
+coefficient-difference block is informative, but not the sole source of the
+network's robustness under outcome drift.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Sensitivity to perturbing the OLS-derived coefficient-difference
+summary block in SC5 ($n_c=100$, $\theta=1$).}
+\label{tab:ols-perturbation}
+\begin{tabular}{ccccc}
+\toprule
+Noise SD & Bias & Absolute bias & RMSE & Coverage \\
+\midrule
+0.00 & 0.222 & 0.222 & 0.273 & 0.98 \\
+0.02 & 0.226 & 0.226 & 0.276 & 0.98 \\
+0.05 & 0.241 & 0.241 & 0.290 & 0.98 \\
+0.10 & 0.270 & 0.270 & 0.328 & 0.98 \\
+0.15 & 0.296 & 0.296 & 0.357 & 0.96 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Code Availability}
+\label{app:code-availability}
+
+The supplementary material includes runnable code for the main simulation
+study, timing experiment, exploratory NPE extensions, and ADNI analysis
+pipeline. The ADNI raw data are not redistributed because access requires a
+data-use agreement, but the code documents the preprocessing and analysis
+steps needed to reproduce the reported ADNI results once authorized data are
+available.
+
 \subsection{Exploratory NPE Extensions}
 
 We also ran exploratory non-null simulations for several NPE variants that add

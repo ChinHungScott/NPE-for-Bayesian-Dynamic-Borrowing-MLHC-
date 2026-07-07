@@ -13,13 +13,23 @@ real data and that direct borrowing can pull inference away from the
 concurrent target even when discrimination remains strong. ADNI is an
 illustration rather than a benchmark---the target is a cohort-specific
 risk parameter, not a randomized treatment effect.
+Accordingly, the empirical scope of the paper is a scalar current-study
+target: an additive study-effect parameter in the Gaussian simulations
+and a cohort-level risk parameter in ADNI. Extending the framework to
+covariate effects, treatment--covariate interactions, or other causal
+functionals requires additional evaluation.
 
 Two limitations are worth emphasizing. The quality of the approximate
 posterior depends on the pretraining simulator; mismatch patterns not
 covered by the simulator cannot be expected to be handled reliably.
-And the current implementation consumes hand-crafted summaries, so
+The current implementation also consumes hand-crafted summaries, so
 posterior quality inherits the sufficiency (or insufficiency) of those
-summaries for the mismatch at hand.
+summaries for the mismatch at hand. This choice is partly an auditing
+tradeoff: the summary blocks expose interpretable signals of covariate
+shift, outcome-mechanism drift, overlap, and joint mismatch, but they may
+miss structure that a richer patient-level representation could learn.
+Runnable code for the simulation and ADNI pipelines is included in the
+supplementary material; ADNI raw data require separate data-use access.
 
 Three directions extend the work naturally: richer paired-data
 representations (e.g., transformer-based patient encoders for irregular
