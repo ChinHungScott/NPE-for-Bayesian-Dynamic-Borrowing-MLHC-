@@ -244,15 +244,46 @@ Noise SD & Bias & Absolute bias & RMSE & Coverage \\
 \end{tabular}
 \end{table}
 
+\subsection{ADNI Prior-Scale Sensitivity}
+\label{app:adni-sensitivity}
+
+For the ADNI application, the external--concurrent outcome shift parameter
+$\delta$ is a nuisance quantity used during simulation-based pretraining.
+Table~\ref{tab:adni-delta-sensitivity} varies the prior standard deviation
+for $\delta$ while keeping the same observed ADNI covariates and outcome
+definition. Each row averages five independent NPE pretraining runs. The
+posterior mean of the concurrent risk-level parameter remains close to the
+empirical concurrent logit risk, $-1.584$, across the prior scales considered;
+interval width changes only modestly.
+
+\begin{table}[H]
+\centering
+\small
+\caption{ADNI sensitivity to the prior standard deviation for the
+external--concurrent outcome-shift parameter $\delta$.}
+\label{tab:adni-delta-sensitivity}
+\begin{tabular}{ccccc}
+\toprule
+$\mathrm{sd}(\delta)$ & Posterior mean & Mean SD & 95\% interval & Width \\
+\midrule
+0.50 & -1.573 & 0.864 & $(-3.281,\ 0.122)$ & 3.403 \\
+0.75 & -1.583 & 0.862 & $(-3.287,\ 0.107)$ & 3.394 \\
+1.00 & -1.587 & 0.856 & $(-3.279,\ 0.092)$ & 3.371 \\
+1.25 & -1.592 & 0.854 & $(-3.279,\ 0.082)$ & 3.360 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \subsection{Code Availability}
 \label{app:code-availability}
 
 The supplementary material includes runnable code for the main simulation
 study, timing experiment, exploratory NPE extensions, and ADNI analysis
-pipeline. The ADNI raw data are not redistributed because access requires a
-data-use agreement, but the code documents the preprocessing and analysis
-steps needed to reproduce the reported ADNI results once authorized data are
-available.
+pipeline. Code is also available at
+\url{https://github.com/ChinHungScott/NPE-for-Bayesian-Dynamic-Borrowing-MLHC-}.
+The ADNI raw data are not redistributed because access requires a data-use
+agreement, but the code documents the preprocessing and analysis steps needed
+to reproduce the reported ADNI results once authorized data are available.
 
 \subsection{Exploratory NPE Extensions}
 
