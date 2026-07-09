@@ -244,6 +244,59 @@ Noise SD & Bias & Absolute bias & RMSE & Coverage \\
 \end{tabular}
 \end{table}
 
+\subsection{Illustrative Covariate-Effect Target Check}
+\label{app:covariate-effect}
+
+The main empirical validation focuses on scalar current-study targets: an
+additive study-effect parameter in the Gaussian simulations and a
+cohort-level risk parameter in ADNI. As a limited boundary check, we also
+considered a simple covariate-effect target, $\beta_1$, in the Gaussian
+simulation. Because the target is now a regression coefficient rather than an
+intercept-like study-effect parameter, we augmented the summary vector with
+source-specific OLS slope estimates and their standard errors. We then trained
+an NPE model to approximate the posterior for $\beta_1$ and applied a
+validation-based scale calibration to its posterior standard deviation.
+
+Table~\ref{tab:covariate-effect} reports results for $n_c=100$ and
+$n_e=200$ over 50 simulation replicates. This check is not intended as a full
+validation of arbitrary covariate effects or treatment--covariate
+interactions. Rather, it shows that the same amortized framework can be
+adapted to a different scalar target when the summary representation is made
+target-aware. A systematic study of covariate-effect targets and their
+overlap requirements remains future work.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Limited illustrative check for a current-study covariate-effect
+target, $\beta_1$ ($n_c=100$, $n_e=200$). NPE uses target-aware summaries and
+validation-based posterior-scale calibration.}
+\label{tab:covariate-effect}
+\begin{tabular}{llcccc}
+\toprule
+Scenario & Method & Bias & RMSE & Coverage & Width \\
+\midrule
+SC1 & Concurrent OLS & -0.006 & 0.134 & 0.94 & 0.538 \\
+SC1 & NPE-$\beta_1$ & 0.002 & 0.082 & 1.00 & 0.442 \\
+\cmidrule(lr){1-6}
+SC2 & Concurrent OLS & 0.003 & 0.136 & 0.92 & 0.542 \\
+SC2 & NPE-$\beta_1$ & 0.016 & 0.064 & 1.00 & 0.459 \\
+\cmidrule(lr){1-6}
+SC3 & Concurrent OLS & -0.002 & 0.142 & 0.94 & 0.530 \\
+SC3 & NPE-$\beta_1$ & 0.004 & 0.069 & 0.98 & 0.434 \\
+\cmidrule(lr){1-6}
+SC4 & Concurrent OLS & 0.002 & 0.127 & 0.94 & 0.523 \\
+SC4 & NPE-$\beta_1$ & 0.021 & 0.081 & 0.98 & 0.451 \\
+\cmidrule(lr){1-6}
+SC5 & Concurrent OLS & -0.014 & 0.157 & 0.92 & 0.532 \\
+SC5 & NPE-$\beta_1$ & -0.013 & 0.079 & 1.00 & 0.420 \\
+\cmidrule(lr){1-6}
+SC6 & Concurrent OLS & 0.004 & 0.151 & 0.94 & 0.548 \\
+SC6 & NPE-$\beta_1$ & -0.011 & 0.073 & 0.98 & 0.422 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \subsection{ADNI Prior-Scale Sensitivity}
 \label{app:adni-sensitivity}
 
