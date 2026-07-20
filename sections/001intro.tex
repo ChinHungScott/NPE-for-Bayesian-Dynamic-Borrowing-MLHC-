@@ -104,6 +104,17 @@ making naive borrowing poorly calibrated; the ADNI example is used as a
 real-data borrowing problem under cohort shift rather than as a randomized
 treatment-effect analysis.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.88\textwidth]{fig_method_overview.pdf}
+    \caption{Overview of the proposed NPE workflow. Simulation scenarios define
+    different types of source mismatch and are used to generate current/external
+    dataset pairs for pretraining. At inference time, the same summaries are
+    computed for a new dataset pair and passed through the pretrained NPE to
+    obtain an approximate posterior for the current-study target parameter.}
+    \label{fig:method-overview}
+\end{figure}
+
 Our main contributions are as follows.
 \begin{itemize}[leftmargin=1.5em, itemsep=2pt]
   \item We develop a summary-based NPE method for Bayesian dynamic
@@ -125,17 +136,6 @@ Our main contributions are as follows.
         formulation can recover the concurrent-cohort risk level more
         closely than naive borrowing strategies in this example.
 \end{itemize}
-
-\begin{figure}[!t]
-    \centering
-    \includegraphics[width=.88\textwidth]{fig_method_overview.pdf}
-    \caption{Overview of the proposed NPE workflow. Simulation scenarios define
-    different types of source mismatch and are used to generate current/external
-    dataset pairs for pretraining. At inference time, the same summaries are
-    computed for a new dataset pair and passed through the pretrained NPE to
-    obtain an approximate posterior for the current-study target parameter.}
-    \label{fig:method-overview}
-\end{figure}
 
 The remainder of the paper is organized as follows.
 Section~\ref{sec:related} reviews dynamic borrowing, balancing methods, and
