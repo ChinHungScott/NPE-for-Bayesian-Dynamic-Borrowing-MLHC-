@@ -115,28 +115,35 @@ treatment-effect analysis.
 \end{figure}
 
 Our main contributions are as follows.
-\begin{itemize}[leftmargin=1.5em, itemsep=1pt]
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
   \item We develop a summary-based NPE method for Bayesian dynamic
         borrowing that replaces repeated per-dataset posterior fitting with
-        amortized inference on paired current/external data.
-  \item We evaluate the method across six exchangeability regimes,
-        including covariate shift, outcome drift, and joint non-exchangeability,
-        and benchmark against
+        amortized inference on paired current/external data, so that a
+        single pretrained network can be reused across many cohort pairs.
+  \item We evaluate the method in a controlled simulation study spanning
+        six exchangeability regimes, including covariate shift, outcome
+        drift, and joint non-exchangeability, and benchmark against
         representative BDB priors and propensity-based reweighting
         baselines.
   \item We show empirically that the main strength of the approach is
-        robustness in harder mismatch settings, especially outcome drift,
-        where low-dimensional compatibility summaries and covariate-balancing
-        weights tend to struggle.
+        robustness in the harder mismatch settings, especially when the
+        outcome model differs across sources---the regime where low-dimensional
+        compatibility summaries and covariate-balancing weights tend to
+        struggle.
   \item We present a real-data ADNI case study showing that this borrowing
-        problem also appears in practice, and that NPE can recover the
-        concurrent-cohort risk level more closely than naive borrowing
-        strategies in this example.
+        problem also appears in practice and that the proposed NPE
+        formulation can recover the concurrent-cohort risk level more
+        closely than naive borrowing strategies in this example.
 \end{itemize}
 
-The remainder of the paper reviews related work, defines the borrowing setup
-and proposed method, presents the simulation and ADNI studies, and concludes
-with limitations and future directions.
+The remainder of the paper is organized as follows.
+Section~\ref{sec:related} reviews dynamic borrowing, balancing methods, and
+simulation-based inference.
+Section~\ref{sec:problem} introduces the borrowing setup, proposed method,
+and simulation regimes.
+Section~\ref{sec:simulation} presents the simulation study.
+Section~\ref{sec:adni} reports the ADNI real-data example.
+Section~\ref{sec:discussion} concludes with limitations and future directions.
 
 % -------------------------------------------------------
 % REQUIRED MLHC SECTION
