@@ -106,12 +106,11 @@ treatment-effect analysis.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.88\textwidth]{fig_method_overview.pdf}
-    \caption{Overview of the proposed NPE workflow. Simulation scenarios define
-    different types of source mismatch and are used to generate current/external
-    dataset pairs for pretraining. At inference time, the same summaries are
-    computed for a new dataset pair and passed through the pretrained NPE to
-    obtain an approximate posterior for the current-study target parameter.}
+    \includegraphics[width=.80\textwidth]{fig_method_overview.pdf}
+    \caption{Proposed NPE workflow. Simulation scenarios generate
+    current/external pairs for pretraining; at inference, the same summaries
+    from a new pair are passed through the pretrained NPE to return a posterior
+    for the current-study target.}
     \label{fig:method-overview}
 \end{figure}
 
