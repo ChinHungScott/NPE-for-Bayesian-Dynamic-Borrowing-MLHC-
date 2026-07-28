@@ -204,9 +204,10 @@ $q_\eta$ learns a smooth map from observed mismatch to posterior; the
 discrete grid is reserved for interpretable evaluation
 (Section~\ref{sec:simulation}).
 
-\begin{table}[t]
+\begin{table}[H]
 \centering
-\small
+\scriptsize
+\setlength{\tabcolsep}{10pt}
 \begin{tabular}{cll}
 \toprule
 Scenario & Covariates & Outcomes \\
@@ -219,10 +220,9 @@ SC5 & exchangeable        & strong drift \\
 SC6 & strong shift        & strong drift \\
 \bottomrule
 \end{tabular}
-\caption{Two-axis taxonomy of source-mismatch regimes. SC1 is the
-exchangeable baseline; SC2 and SC4 isolate covariate shift at increasing
-strength; SC3 and SC5 isolate outcome drift at increasing strength; and SC6
-combines strong covariate shift with strong outcome drift.}
+\caption{Two-axis taxonomy of source-mismatch regimes. SC1 is exchangeable;
+SC2/SC4 isolate covariate shift; SC3/SC5 isolate outcome drift; and SC6
+combines both shifts.}
 \label{tab:regimes}
 \end{table}
 
