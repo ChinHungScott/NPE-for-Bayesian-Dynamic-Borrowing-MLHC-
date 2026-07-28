@@ -88,10 +88,9 @@ the simulator's coverage is therefore part of the method rather than an
 afterthought.
 
 We use a Gaussian posterior family,
-\begin{equation}
+$
   q_{\eta}(\theta \mid s) = \mathcal{N}\!\bigl(m_{\eta}(s),\, \sigma_{\eta}^2(s)\bigr),
-  \label{eq:gaussian-head}
-\end{equation}
+$
 trained by minimizing the expected negative log-likelihood
 \begin{equation}
   \widehat{\eta}
@@ -124,7 +123,6 @@ of $s$ is the main modeling lever.
 We aim for a summary that is approximately sufficient for the mismatch
 structure relevant to $\theta$: pairs $(D_c, D_e)$ that should yield the
 same posterior on $\theta$ should, under the simulator, yield similar $s$.
-
 In addition to the original data space, we use a summary assembled from four blocks, each
 targeting a distinct facet of source (in)compatibility:
 \begin{enumerate}

@@ -87,10 +87,10 @@ Since ADNI does not provide the same randomized treatment setting as the
 simulation study, we use a simpler formulation in which the target is the
 concurrent risk level. Let $X_c$ and $X_e$ denote the observed covariates in
 the concurrent and external cohorts. We simulate outcomes according to
-\begin{align}
-Y_c &\sim \mathrm{Bernoulli}\!\left(\sigma(X_c\beta + \theta)\right), \\
-Y_e &\sim \mathrm{Bernoulli}\!\left(\sigma(X_e\beta + \theta + \delta)\right),
-\end{align}
+\begin{equation}
+    Y_c \sim \mathrm{Bernoulli}\!\left(\sigma(X_c\beta + \theta)\right), \quad
+Y_e \sim \mathrm{Bernoulli}\!\left(\sigma(X_e\beta + \theta + \delta)\right),
+\end{equation}
 where $\sigma(z)=1/(1+e^{-z})$ is the logistic link.
 
 In this model, $\theta$ is the concurrent risk-level parameter of interest,

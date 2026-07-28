@@ -29,20 +29,19 @@ The target parameter is the additive current-study target $\theta$.
 
 \subsection{Methods compared}
 We compare four methods:
-\begin{itemize}
-    \item \textbf{PSPower} \citep{ibrahim2015power}: a
+\textbf{PSPower} \citep{ibrahim2015power}: a
     propensity-score-stratified power prior with a borrowing weight estimated
     within PS strata.
-    \item \textbf{IW} \citep{chesnaye2022introduction}: an individualized
+  \textbf{IW} \citep{chesnaye2022introduction}: an individualized
     weighting method based on covariate distance from the concurrent
     distribution.
-    \item \textbf{Commensurate} \citep{hobbs2011commensurate}: a
+\textbf{Commensurate} \citep{hobbs2011commensurate}: a
     commensurate prior whose precision parameter adapts to observed
     source compatibility.
-    \item \textbf{NPE} (ours): neural posterior estimation trained
+\textbf{NPE} (ours): neural posterior estimation trained
     once on simulated datasets and reused to approximate
     $p(\theta \mid \mathcal{D}_c, \mathcal{D}_e)$ for new dataset pairs.
-\end{itemize}
+
 
 We expect PSPower and Commensurate to work best near exchangeability, IW to
 help mainly under covariate shift, and NPE to be most useful when mismatch
@@ -136,7 +135,6 @@ The null run with $\theta=0$ gives a similar robustness pattern, now focused on
 Type I error. In SC1 and SC2, the classical methods have cleaner operating
 characteristics. In SC3, SC5, and SC6, they become anti-conservative, whereas
 NPE stays much closer to nominal behavior.
-
 The full null table is reported in Appendix~\ref{app:additional-results}.
 Figure~\ref{fig:sim-null-operating} shows coverage and Type I error in the
 null run.
