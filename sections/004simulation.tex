@@ -27,6 +27,28 @@ For each regime, we generate one concurrent and one external dataset.
 We consider $N_c \in \{50,100\}$ and fix $N_e=200$.
 The target parameter is the additive current-study target $\theta$.
 
+\begin{table}[H]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{10pt}
+\begin{tabular}{cll}
+\toprule
+Scenario & Covariates & Outcomes \\
+\midrule
+SC1 & exchangeable        & exchangeable \\
+SC2 & partial shift       & exchangeable \\
+SC3 & exchangeable        & partial drift \\
+SC4 & strong shift        & exchangeable \\
+SC5 & exchangeable        & strong drift \\
+SC6 & strong shift        & strong drift \\
+\bottomrule
+\end{tabular}
+\caption{Two-axis taxonomy of source-mismatch regimes. SC1 is exchangeable;
+SC2/SC4 isolate covariate shift; SC3/SC5 isolate outcome drift; and SC6
+combines both shifts.}
+\label{tab:regimes}
+\end{table}
+
 \subsection{Methods compared}
 We compare four methods:
 \textbf{PSPower} \citep{ibrahim2015power}: a
