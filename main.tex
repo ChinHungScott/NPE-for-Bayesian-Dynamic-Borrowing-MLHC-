@@ -72,7 +72,7 @@ already available.
 Bayesian dynamic borrowing (BDB) provides a principled framework for adaptively controlling the influence of external data, but classical implementations often depend on hand-specified priors and MCMC-based inference, which can be computationally expensive and not generalizable.
 In this work, we study amortized neural posterior estimation (NPE) as a flexible alternative.
 A single network is pretrained on simulated current/external dataset
-pairs spanning cov3ariate shift, outcome drift, and joint
+pairs spanning covariate shift, outcome drift, and joint
 non-exchangeability, and then returns an approximate posterior for a
 scalar current-study target in a single forward pass.
 Through simulation studies, we find that NPE is most useful under outcome drift and joint mismatch: in the harder outcome-drift regimes, it gives up to about five-fold lower absolute bias than the best classical baseline and keeps Type I error close to nominal. After pretraining, posterior summaries are obtained in about 8 ms per dataset, roughly $10^3\times$ faster than MCMC-based borrowing baselines in our timing experiment. We further analyze Alzheimer's Disease Neuroimaging Initiative (ADNI) data and show that, when mild cognitive impairment outcomes differ across cohorts, the NPE formulation recovers the later-cohort risk level in this example without claiming greater precision.
@@ -84,6 +84,17 @@ Through simulation studies, we find that NPE is most useful under outcome drift 
 \input{sections/004simulation}
 \input{sections/005adni}
 \input{sections/006discussion}
+\acks{Data used in preparation of this article were obtained from the
+Alzheimer's Disease Neuroimaging Initiative (ADNI) database
+(\url{adni.loni.usc.edu}). The ADNI was launched in 2003 as a
+public--private partnership led by Principal Investigator Michael W.
+Weiner, MD. ADNI data collection and sharing are funded by the National
+Institute on Aging (National Institutes of Health Grant U19 AG024904) and
+by additional public and private partners. The ADNI investigators
+contributed to the design and implementation of ADNI and/or provided data
+but did not participate in the analysis or writing of this report. A
+complete listing of ADNI investigators is available at
+\url{http://adni.loni.usc.edu/wp-content/uploads/how_to_apply/ADNI_Acknowledgement_List.pdf}.}
 \newpage
 \bibliography{refs}
 \newpage
