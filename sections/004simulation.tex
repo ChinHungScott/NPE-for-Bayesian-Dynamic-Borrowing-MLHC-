@@ -114,20 +114,12 @@ Figure~\ref{fig:sim-nonnull-error} shows the same pattern across all
 scenarios. Absolute bias measures displacement from the target, while RMSE
 also reflects variability across simulation replicates.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=.66\textwidth]{fig_hex_nonnull_error_metrics.pdf}
+\includegraphics[width=.76\textwidth]{fig_hex_nonnull_error_metrics.pdf}
 \caption{Non-null estimation error by scenario. Each spoke is one
 simulation scenario; values closer to the center indicate smaller error.}
 \label{fig:sim-nonnull-error}
-\end{figure}
-\begin{figure}[H]
-\centering
-\includegraphics[width=.68\textwidth]{fig_hex_null_operating_metrics.pdf}
-\caption{Null operating characteristics by scenario. Dashed polygons
-indicate the nominal benchmark for each metric: 0.95 for coverage and 0.05 for
-Type I error.}
-\label{fig:sim-null-operating}
 \end{figure}
 \subsection{Null results}
 
@@ -139,6 +131,14 @@ The full null table is reported in Appendix~\ref{app:additional-results}.
 Figure~\ref{fig:sim-null-operating} shows coverage and Type I error in the
 null run.
 
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=.68\textwidth]{fig_hex_null_operating_metrics.pdf}
+\caption{Null operating characteristics by scenario. Dashed polygons
+indicate the nominal benchmark for each metric: 0.95 for coverage and 0.05 for
+Type I error.}
+\label{fig:sim-null-operating}
+\end{figure}
 
 \FloatBarrier
 \subsection{Computational timing}
