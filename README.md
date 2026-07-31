@@ -20,7 +20,3 @@ pdflatex main
 ## Code and results
 
 The repository includes code for the simulation study, ADNI analysis pipeline, runtime comparison, and camera-ready robustness checks. ADNI raw data are not redistributed here because access requires a separate ADNI data-use agreement.
-
-## Notes
-
-The camera-ready LaTeX submission zip should include the manuscript source files, template files, bibliography, section files, and figures required by `main.tex`.
