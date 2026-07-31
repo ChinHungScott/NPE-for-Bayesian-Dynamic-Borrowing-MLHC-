@@ -20,3 +20,13 @@ pdflatex main
 ## Code and results
 
 The repository includes code for the simulation study, ADNI analysis pipeline, runtime comparison, and camera-ready robustness checks. ADNI raw data are not redistributed here because access requires a separate ADNI data-use agreement.
+
+## Repository structure
+
+- `main.tex`, `sections/`, `refs.bib`: LaTeX source for the paper.
+- `simulation.py`, `npe.py`, `baselines.py`: core simulation, neural posterior estimation, and baseline-method code.
+- `theta0/`, `theta1/`: simulation outputs for the null and non-null settings.
+- `ADNI_Result/`: processed ADNI summaries and outputs used in the paper.
+- `ADNI_SENSITIVITY/`: ADNI sensitivity results reported in the appendix.
+- `camera_ready_checks/`: robustness checks added for the camera-ready version.
+- `Runtime(wihtoutOT)/`: runtime comparison outputs.
