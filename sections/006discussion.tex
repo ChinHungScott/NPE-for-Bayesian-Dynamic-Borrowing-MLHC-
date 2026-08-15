@@ -11,7 +11,9 @@ is a scalar current-study target---an additive study-effect parameter in the
 Gaussian simulations and a cohort-level risk parameter in ADNI. Covariate
 effects, treatment--covariate interactions, and other causal functionals require
 additional evaluation; Appendix~\ref{app:covariate-effect} provides only a
-limited illustrative check for one target-aware covariate-effect analysis.
+limited illustrative check for one target-aware covariate-effect analysis. This
+framing keeps the real-data example aligned with the estimand actually analyzed
+rather than treating ADNI as a randomized treatment-effect study.
 
 Posterior quality depends on the pretraining simulator, so mismatch patterns
 outside its support cannot be handled reliably. The current hand-crafted
@@ -19,5 +21,7 @@ summaries expose auditable signals of covariate shift, outcome-mechanism drift,
 overlap, and joint mismatch, but may miss richer patient-level structure.
 Runnable code is included in the supplementary material; ADNI raw data require
 separate data-use access. Future work will study richer paired-data
-representations, posterior-spread calibration, multi-source borrowing, and
-broader evaluation across estimands and prospective settings.
+representations, such as patient-level encoders for irregular longitudinal
+records, posterior-spread calibration in severe mismatch regimes, multi-source
+borrowing, and broader evaluation across estimands and prospective
+data-borrowing settings.
