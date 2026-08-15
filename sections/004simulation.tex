@@ -72,24 +72,23 @@ methods have large bias and essentially no coverage, while NPE remains closer
 to the current-study target. In SC6, NPE is more stable than PSPower and
 Commensurate and is close to IW.
 
-Table~\ref{tab:sim-hard-summary} gives a compact summary of the harder
-settings for $N_c=100$. The full non-null and null simulation tables are
-reported in Appendix~\ref{app:additional-results}.
-The MCSE columns help distinguish the large method differences in these
-settings from simulation noise.
+Table~\ref{tab:sim-hard-summary} summarizes the harder settings for
+$N_c=100$; full simulation tables are in Appendix~\ref{app:additional-results}.
+The MCSE columns show that the large method differences are not simulation
+noise.
 
-\vspace{0.35em}
+\vspace{-0.25em}
 \begin{center}
-\scriptsize
-\renewcommand{\arraystretch}{0.92}
-\captionof{table}{Representative hard-setting summary ($N_c=100$), with
-Monte Carlo standard errors (MCSEs). Bias and coverage are from the non-null
-run with $\theta=1$; Type I error is from the null run with $\theta=0$.}
+\fontsize{6.8pt}{7.35pt}\selectfont
+\renewcommand{\arraystretch}{0.82}
+\captionof{table}{Representative hard-setting summary ($N_c=100$). Bias and
+coverage are from $\theta=1$; Type I error is from $\theta=0$.}
 \label{tab:sim-hard-summary}
-\setlength{\tabcolsep}{1.8pt}
+\vspace{-0.45em}
+\setlength{\tabcolsep}{1.35pt}
 \begin{tabular}{@{}llcccccc@{}}
 \toprule
-Scenario & Method & Bias & Bias MCSE & Coverage & Cov. MCSE & Type I & Type I MCSE \\
+Scenario & Method & Bias & Bias SE & Cov. & Cov. SE & Type I & Type I SE \\
 \midrule
 SC3 & PSPower      & 0.96 & 0.02 & 0.00 & 0.00 & 1.00 & 0.00 \\
 SC3 & IW           & 0.66 & 0.02 & 0.00 & 0.00 & 1.00 & 0.00 \\
