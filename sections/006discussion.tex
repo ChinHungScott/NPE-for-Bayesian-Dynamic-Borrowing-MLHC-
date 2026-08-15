@@ -1,35 +1,26 @@
 \section{Discussion}
 \label{sec:discussion}
 
-We studied neural posterior estimation as an amortized approach to
-Bayesian dynamic borrowing: pretrain once on a broad simulation
-distribution, then obtain approximate posteriors for new
-current--external pairs in a single forward pass. The simulation study
-is the primary methodological evaluation because it isolates covariate
-shift, outcome drift, and their combination. ADNI is complementary: it
-shows that cohort mismatch arises in real data and that direct borrowing
-can pull inference away from the concurrent target even when
-discrimination remains strong.
-The empirical scope is a scalar current-study target---an additive
-study-effect parameter in the Gaussian simulations and a cohort-level
-risk parameter in ADNI. Covariate effects, treatment--covariate
-interactions, and other causal functionals require additional evaluation;
-Appendix~\ref{app:covariate-effect} provides only a limited illustrative
-check for one target-aware covariate-effect analysis. This framing keeps
-the real-data example aligned with the estimand actually analyzed rather
-than treating ADNI as a randomized treatment-effect study.
+We studied neural posterior estimation as an amortized approach to Bayesian
+dynamic borrowing: pretrain once on a broad simulation distribution, then obtain
+approximate posteriors for new current--external pairs in a single forward pass.
+The simulation study is the primary methodological evaluation because it
+isolates covariate shift, outcome drift, and their combination; ADNI is a
+complementary real-data illustration showing that cohort mismatch can pull
+inference away from the concurrent target even when discrimination remains
+strong. The empirical scope is a scalar current-study target---an additive
+study-effect parameter in the Gaussian simulations and a cohort-level risk
+parameter in ADNI. Covariate effects, treatment--covariate interactions, and
+other causal functionals require additional evaluation; Appendix~\ref{app:covariate-effect}
+provides only a limited illustrative check for one target-aware covariate-effect
+analysis.
 
 Two limitations are worth emphasizing. Posterior quality depends on the
 pretraining simulator, so mismatch patterns outside its support cannot be
-handled reliably. The current implementation also uses hand-crafted
-summaries: these expose auditable signals of covariate shift,
-outcome-mechanism drift, overlap, and joint mismatch, but may miss
-structure that a richer patient-level representation could learn.
-Runnable code is included in the supplementary material; ADNI raw data
-require separate data-use access.
-
-Future work will study richer paired-data representations, such as
-patient-level encoders for irregular longitudinal records, posterior-spread
-calibration in severe mismatch regimes, and multi-source borrowing. A broader
-evaluation across estimands and prospective data-borrowing settings would
-further clarify when amortized borrowing is most useful in practice.
+handled reliably. The current implementation also uses hand-crafted summaries:
+these expose auditable signals of covariate shift, outcome-mechanism drift,
+overlap, and joint mismatch, but may miss structure that richer patient-level
+representations could learn. Runnable code is included in the supplementary
+material; ADNI raw data require separate data-use access. Future work will study
+richer paired-data representations, posterior-spread calibration, multi-source
+borrowing, and broader evaluation across estimands and prospective settings.
